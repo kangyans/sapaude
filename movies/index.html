@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sapere Aude · 影冊</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Marcellus+SC&display=swap");
+/* Chinese + English font handling */
+
+@font-face {
+    font-family: "MyChinese";
+    src: local("Kaiti SC"),
+         local("STKaiti"),
+         local("TW-Kai"),
+         local("KaiTi"),
+         local("URW Chancery L");
+    unicode-range:
+        U+2E80-2EFF,   /* CJK Radicals Supplement */
+        U+3000-303F,   /* CJK punctuation */
+        U+3040-309F,   /* Hiragana */
+        U+30A0-30FF,   /* Katakana */
+        U+3400-4DBF,   /* CJK Extension A */
+        U+4E00-9FFF,   /* CJK Unified Ideographs */
+        U+F900-FAFF;   /* CJK Compatibility Ideographs */
+}
+
+
+@font-face {
+    font-family: "MyEnglish";
+    src: local("Marcellus SC");
+    unicode-range:
+        U+0000-024F,
+        U+1E00-1EFF,
+        U+2000-206F,
+        U+20A0-20CF;
+}
+
+/* 2. Your custom properties (with the missing comma fixed!) */
+:root {
+    --width: 720px;
+    --font-main: "MyChinese", "MyEnglish", serif;    /* Verdana, sans-serif; */
+    --font-secondary: "MyChinese", "MyEnglish", serif; /* Verdana, sans-serif; */
+    --font-scale: 1.2em;
+    --background-color: #faf9f5; /* #fff */
+    --heading-color: #222;
+    --text-color: #333;
+    --link-color: #000;  /* #3273dc */
+    --visited-color:  #000;  /* #8b6fcb */
+    --code-background-color: #f2f2f2;
+    --code-color: #222;
+    --blockquote-color: #222;
+
+    /* Perfect line height for Chinese text on Bear Blog */
+    --line-height: 1.7;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #01242e;
+        --heading-color: #eee;
+        --text-color: #ddd;
+        --link-color: #8cc2dd;
+        --visited-color:  #8b6fcb;
+        --code-background-color: #000;
+        --code-color: #ddd;
+        --blockquote-color: #ccc;
+    }
+}
+
+body {
+    font-family: var(--font-secondary);
+    font-size: var(--font-scale);
+    margin: auto;
+    padding: 20px;
+    max-width: var(--width);
+    text-align: left;
+    background-color: var(--background-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family:  var(--font-main);
+    color: var(--heading-color);
+}
+
+a.title {
+    background: transparent !important;
+    color: inherit;
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+}
+
+a.title:hover {
+    background: transparent !important;
+    color: inherit;
+    text-decoration: none;
+}
+
+a {
+    color: var(--link-color);
+    cursor: pointer;
+    text-decoration: none;
+    padding: 2px 4px;
+    margin: -2px -4px;
+}
+
+
+/* a:visited {
+    color: var(--visited-color);
+}
+
+*/
+
+a:hover {
+    color: #fff;
+    background-color: #000;
+    text-decoration: none;
+}
+
+a:visited:hover {
+    color: #fff !important;
+    background-color: #000 !important;
+    text-decoration: none;
+}
+
+nav a {
+    margin-right: 8px;
+    text-decoration: none;
+}
+
+nav a:hover{
+    color: #444;
+    background-color: #E5DFD2;
+    text-decoration: none;
+}
+
+
+
+/* NAV OVERRIDE — keep this LAST */
+nav a:visited:hover {
+    color: #444 !important;
+    background-color: #E5DFD2 !important;
+    text-decoration: none;
+}
+
+a.title:visited:hover {
+    background: none !important;
+    color: var(--heading-color) !important;
+    text-decoration: none !important;
+}
+
+strong, b {
+    color: var(--heading-color);
+}
+
+button {
+    margin: 0;
+    cursor: pointer;
+}
+
+time {
+ 	font-family: monospace;
+  	font-style: normal;
+  	font-size: 15px;
+}
+
+main {
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+}
+
+hr {
+    border: 0;
+    border-top: 1.5px solid;
+}
+
+img {
+    max-width: 100%;
+}
+
+code {
+    font-family: monospace;
+    padding: 2px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+}
+
+
+blockquote {
+    border-left: 1px solid #999;
+    color: var(--blockquote-color);
+    padding-left: 1.1em;
+    font-style: italic;
+}
+
+footer {
+    padding: 25px 0;
+    text-align: center;
+}
+
+.title:hover {
+    text-decoration: none;
+}
+
+.title h1 {
+    font-size: 1.5em;
+}
+
+.inline {
+    width: auto !important;
+}
+
+.highlight {
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    overflow-x: auto;
+}
+
+/* blog post list */
+ul.blog-posts {
+    list-style-type: none;
+    padding: unset;
+}
+
+ul.blog-posts li {
+    display: flex;
+}
+
+ul.blog-posts li span {
+    flex: 0 0 130px;
+}
+
+ul.blog-posts li a:visited {
+    color: var(--visited-color);
+}
+
+/* =============== Customized Area =================== */
+
+header {
+    text-align: center;
+}
+
+/* contrl nav */
+header a {
+    font-size: 1.1rem;
+    font-family: "URW Chancery L", "Apple Chancery", "Brush Script MT", cursive;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.custom-box {
+    border: 1.5px solid;
+    padding: 15px;
+    width: auto;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+
+
+/* ===== Calendar ===== */
+
+.calendar-card {
+    float: right;
+
+    width: 230px;
+    margin: 0 0 25px 35px;
+
+    border: 1.5px solid;
+    padding: 14px;
+
+    box-sizing: border-box;
+    font-family: serif;
+}
+
+
+/* top */
+
+.calendar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-bottom: 8px;
+    border-bottom: 1px solid;
+
+    font-size: 0.78em;
+    letter-spacing: 0.15em;
+}
+
+
+/* main area */
+
+.calendar-content {
+    display: flex;
+    padding: 15px 0;
+}
+
+.calendar-left {
+    width: 55%;
+    text-align: center;
+
+    border-right: 1px solid;
+}
+
+.calendar-month {
+    font-size: 0.85em;
+    letter-spacing: 0.2em;
+}
+
+.calendar-day {
+    font-size: 4em;
+    line-height: 0.95;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.calendar-week {
+    font-size: 0.75em;
+}
+
+
+.calendar-right {
+    width: 45%;
+    padding-left: 15px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    font-size: 0.78em;
+    line-height: 2;
+}
+
+
+/* bottom */
+
+.calendar-bottom {
+    border-top: 1px solid;
+
+    padding-top: 8px;
+
+    display: flex;
+    justify-content: space-between;
+
+    font-size: 0.7em;
+}
+
+.custom-box-nav {
+    border: 1.5px solid;
+    padding: 0;
+    width: auto;
+    margin-bottom: 5px;
+}
+
+.custom-box-nav p {
+    display: flex;
+    margin: 0;
+}
+
+.custom-box-nav a {
+    flex: 1 1 0;
+    text-align: center;
+    padding: 6px 8px;
+    border-right: 1px solid;
+    text-decoration: none;
+}
+
+.custom-box-nav a:last-child {
+    border-right: none;
+}
+
+nav p {
+    display: flex;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+nav p a {
+    flex: 1 1 0;
+    text-align: center;
+    margin: 0 !important;
+}
+
+figcaption {
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 6px;
+    color: inherit;
+}
+
+blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  background-color: #EEEAE0;
+  border-left: 3px solid #9A9488;
+  border-radius: 0 4px 4px 0;
+  /* font-style: italic; */
+  font-size: 0.9em;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px 20px;
+    margin: 40px 0;
+}
+
+.game-card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.game-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 8px;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+                box-shadow 0.35s ease;
+    will-change: transform;
+}
+
+.game-card:hover img {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow:
+         0 8px 20px rgba(0, 0, 0, 0.3),
+         0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.game-card{
+     transition: transform 0.35s ease;
+}
+
+.game-title {
+    margin: 8px 0 0 0 !important;
+    padding: 0 !important;
+    font-size: 0.9rem;
+    line-height: 1.25;
+    font-weight: 600;
+    text-align: left;
+}
+
+.game-rating {
+    margin: 3px 0 0 0 !important;
+    padding: 0 !important;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    opacity: 0.65;
+    color: blue; /* #E57200 */
+    font-weight: bold;
+}
+
+
+/* Tablet */
+@media (max-width: 800px) {
+    .game-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px 16px;
+    }
+}
+
+
+/* Phone */
+@media (max-width: 550px) {
+    .game-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px 12px;
+    }
+
+    .game-title {
+        font-size: 0.85rem;
+    }
+
+    .game-rating {
+        font-size: 0.8rem;
+    }
+}
+
+
+/* Movie */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px 20px;
+    margin: 40px 0;
+}
+
+.movie-card {
+    display: block;
+    min-width: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.movie-card img {
+    width: 100% !important;
+    aspect-ratio: 2/3;
+    height: auto !important;
+    object-fit: cover;
+    display: block;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 8px;
+
+    transition:
+        transform 0.35s cubic-bezier(0.2, 0.8, 0.2 , 1),
+        box-shadow 0.35s ease;
+    will-change: transform;
+}
+
+.movie-card:hover img {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.movie-card {
+    transition: transform 0.35s ease;
+}
+
+.movie-title {
+    margin: 8px 0 0 0 !important;
+    padding: 0 !important;
+    font-size: 0.9rem;
+    line-height: 1.25;
+    font-weight: 600;
+    text-align: left;
+}
+
+.movie-rating {
+    margin: 3px 0 0 0 !important;
+    padding: 0 !important;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    opacity: 0.65;
+    color: blue; /* #E57200 */
+    font-weight: bold;
+}
+
+@media (max-width: 800px) {
+    .movie-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px 16px;
+    }
+
+    .movie-card img {
+        height: 320px !important;
+    }
+}
+
+@media (max-width: 550px) {
+    .movie-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px 12px;
+    }
+
+    .movie-card img {
+        height: 250px !important;
+    }
+
+    .movie-title {
+        font-size: 0.85rem;
+    }
+
+    .movie-rating {
+        font-size: 0.8rem;
+    }
+}
+
+
+/* ===== Mobile: stack the calendar card above the content ===== */
+@media (max-width: 640px) {
+    .calendar-card {
+        float: none;
+        width: auto;
+        margin: 0 0 20px 0;
+    }
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="title" href="/"><h1>Sapere Aude</h1></a>
+  <nav>
+    <div class="custom-box-nav">
+      <p><a href="/blog/">博文</a><a href="/notes/">閒話</a><a href="/movies/">影冊</a><a href="/games/">遊戲</a><a href="/wiki/">資料庫</a><a href="/contact/">聯繫</a></p>
+    </div>
+  </nav>
+</header>
+<main>
+<h2>影冊</h2>
+<p style="font-size:0.85em;opacity:0.7">版式預覽：標題、評分與海報將在正式遷移時從 Bear 導出填入；此處僅示意四列卡片的排版。</p>
+<div class="movie-grid">
+<div class="movie-card"><div style="aspect-ratio:2/3;background:#e8e4da;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9a9488;font-size:0.85em">待遷移 1</div><p class="movie-title">待遷移</p><p class="movie-rating">–</p></div>
+<div class="movie-card"><div style="aspect-ratio:2/3;background:#e8e4da;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9a9488;font-size:0.85em">待遷移 2</div><p class="movie-title">待遷移</p><p class="movie-rating">–</p></div>
+<div class="movie-card"><div style="aspect-ratio:2/3;background:#e8e4da;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9a9488;font-size:0.85em">待遷移 3</div><p class="movie-title">待遷移</p><p class="movie-rating">–</p></div>
+<div class="movie-card"><div style="aspect-ratio:2/3;background:#e8e4da;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9a9488;font-size:0.85em">待遷移 4</div><p class="movie-title">待遷移</p><p class="movie-rating">–</p></div>
+</div>
+</main>
+<footer>
+  <p>Sapere Aude</p>
+</footer>
+</body>
+</html>
