@@ -2,7 +2,7 @@
    Sapere Aude — shared stylesheet
    ===================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Noto+Serif+TC:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Marcellus+SC&family=Noto+Serif+TC:wght@400;600&display=swap");
 
 /* ---------- Tokens ---------- */
 :root {
@@ -11,6 +11,9 @@
     --font-body: "Iowan Old Style", "Songti TC", "Songti SC", "Noto Serif TC", "Source Han Serif TC", serif;
     --font-kai: "Kaiti TC", "Kaiti SC", "STKaiti", "TW-Kai", "BiauKai", "KaiTi", "Noto Serif TC", serif;
     --font-title: "Marcellus SC", "Cormorant Garamond", Georgia, serif;
+    /* Dates/years: needs real tabular figures so every MM-DD is the same width
+       (Marcellus SC has only proportional digits). */
+    --font-num: "EB Garamond", "Iowan Old Style", Georgia, serif;
     --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
     --bg: #f7f4ec;
@@ -175,7 +178,12 @@ th, td {
 }
 th { font-family: var(--font-kai); color: var(--heading); }
 
-time { font-variant-numeric: tabular-nums; color: var(--muted); }
+time {
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+    color: var(--muted);
+}
 
 /* ---------- Header & nav ---------- */
 .site-header {
@@ -276,8 +284,10 @@ time { font-variant-numeric: tabular-nums; color: var(--muted); }
     align-items: center;
     gap: 14px;
     margin: 42px 0 10px;
-    font-family: var(--font-title);
-    font-size: 1.1em;
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+    font-size: 1.15em;
     font-weight: 400;
     letter-spacing: 0.15em;
     color: var(--muted);
@@ -309,12 +319,13 @@ ul.blog-posts li:hover { background: var(--accent-soft); }
 
 ul.blog-posts li > span:first-child,
 ul.blog-posts li time {
-    flex: 0 0 3.4em;
-    font-family: var(--font-title);
-    font-size: 0.88em;
-    font-variant-numeric: tabular-nums;
+    flex: 0 0 3.2em;
+    font-family: var(--font-num);
+    font-size: 0.98em;
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
     color: var(--muted);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
 }
 
 ul.blog-posts li a { text-decoration: none; }
@@ -620,8 +631,7 @@ ul.blog-posts li a { text-decoration: none; }
     letter-spacing: 0.12em;
 }
 .post-header time {
-    font-family: var(--font-title);
-    font-size: 0.85em;
+    font-size: 0.95em;
     letter-spacing: 0.15em;
 }
 .post-header::after {
