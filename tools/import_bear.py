@@ -331,7 +331,9 @@ def build(status, images):
         if title is None:
             title = title_of(doc)
             body = f'<h2 class="page-title">{title}</h2>\n<div class="post-body">\n{m}\n</div>'
-        out(p, re.sub('<[^>]+>', '', title), body)
+        # vertical-text posts get the band-fitting script (see assets/vertical.js)
+        vscript = '<script src="/assets/vertical.js" defer></script>\n' if 'class="vertical"' in body else ''
+        out(p, re.sub('<[^>]+>', '', title), body, vscript)
 
     groups = OrderedDict()
     entries = blog_entries(read(cache_file('/blog/')))

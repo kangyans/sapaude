@@ -670,19 +670,90 @@ ul.blog-posts li a { text-decoration: none; }
 .page-meta { margin: 0; color: var(--muted); font-size: 0.85em; letter-spacing: 0.1em; }
 
 /* Inline post styles set fixed pixel sizes; keep them inside the column. */
-main .frame, main .iPad, main .iphone-frame, main .timeline, main table {
+main .iPad, main .iphone-frame, main .timeline, main table {
     max-width: 100% !important;
 }
-main .frame, main .iPad { overflow: auto; }
-/* Vertical-text frames: scroll container is itself vertical-rl so it opens at the
-   first (rightmost) column instead of the last. */
-main .frame {
-    width: 100% !important;
-    height: min(950px, 82vh) !important;
-    writing-mode: vertical-rl;
-    border-color: var(--heading) !important;
-    outline-color: var(--heading) !important;
+main .iPad { overflow: auto; }
+
+/* ---------- Vertical text (直排): newspaper bands ----------
+   Posts wrote vertical text inside a fixed 750×950px double-ruled frame that
+   scrolled sideways. Now the frame is gone and the text is set like a
+   newspaper: full-width horizontal bands (欄), each read right-to-left,
+   stacked top-to-bottom with a hairline between them. The bands are CSS
+   multi-columns of a vertical-rl box; assets/vertical.js sets the box's
+   height to exactly the bands needed, so nothing scrolls.
+   Specificity (.post-body …) beats each post's own inline <style>. */
+.post-body .frame {
+    display: block;
+    width: auto;
+    height: auto;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: none;
+    overflow: visible;
 }
+
+.post-body .vertical {
+    --band: 20em;                       /* characters per vertical line */
+    display: block;
+    writing-mode: vertical-rl;
+    width: 100%;
+    height: var(--band);                /* one band until vertical.js measures */
+    column-width: var(--band);
+    column-gap: 1.6em;
+    column-rule: 1px solid var(--rule-strong);
+    column-fill: auto;
+    margin: 8px 0 0;
+    font-family: var(--font-kai);
+    font-size: 1.08em;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    text-align: justify;
+    color: var(--text);
+}
+
+.post-body .vertical .main,
+.post-body .vertical .context { line-height: inherit; }
+
+.post-body .vertical p,
+.post-body .vertical .note { margin: 0; margin-block-end: 0.5em; }
+
+.post-body .vertical h2,
+.post-body .vertical h3 {
+    margin: 0;
+    margin-block: 0.4em 0.5em;
+    font-size: 1.1em;
+    letter-spacing: 0.12em;
+    color: var(--heading);
+}
+.post-body .vertical > h2:first-child,
+.post-body .vertical > h3:first-child { margin-block-start: 0; }
+
+/* Cover pages (食林廣記 · 零, 人間詞話 · 零): title set between two ink rules */
+.post-body .box {
+    display: flex;
+    justify-content: center;
+    padding: 2.5em 0;
+    border-top: 1px solid var(--heading);
+    border-bottom: 1px solid var(--heading);
+}
+.post-body .box .vertical {
+    width: auto;
+    height: auto;
+    column-width: auto;
+    font-size: 2.4em;
+    line-height: 1.4;
+    letter-spacing: 0.35em;
+    margin: 0;
+}
+.post-body .box .vertical span { font-size: 0.4em !important; letter-spacing: 0.2em; margin-block-start: 1em; }
+
+@media (max-width: 560px) {
+    .post-body .vertical { --band: 15em; font-size: 1em; column-gap: 1.3em; }
+    .post-body .box .vertical { font-size: 2em; }
+}
+
 main pre { white-space: pre-wrap; }
 main math { font-size: 1.05em; }
 
