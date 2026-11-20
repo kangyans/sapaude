@@ -36,6 +36,13 @@ UA = 'Mozilla/5.0 (static-site importer)'  # Bear pages
 IMG_UA = 'sapaude-site-importer/1.0 (python-urllib)'  # image hosts; Wikimedia rejects browser-like UAs
 
 # Section pages: Bear path -> nav label
+# Bear pages left out of this site on purpose: not built, and every link to
+# them (archive entries, series index lines, prev/next links) is removed.
+EXCLUDE = {
+    '/eatstory/00/',   # 食林廣記 · 零 (cover page)
+    '/poems/cover/',   # 人間詞話 · 零 (cover page)
+}
+
 SECTIONS = OrderedDict([('/blog/', '博文'), ('/twix/', '閒話'), ('/movies/', '影冊'),
                         ('/games/', '遊戲'), ('/arxiv/', '資料庫')])
 
@@ -220,11 +227,22 @@ def make_link_fixer(local):
     return lambda s: re.sub(r'\bhref=([\'"])([^\'"]*)\1', rep, s)
 
 
+def drop_excluded_links(s):
+    """Remove <a> elements pointing at EXCLUDE pages, with a trailing <br>."""
+    def rep(m):
+        url = m.group(2)
+        if url.startswith(BASE):
+            url = url[len(BASE):] or '/'
+        return '' if url.startswith('/') and norm(url) in EXCLUDE else m.group(0)
+    return re.sub(r'<a\b[^>]*\bhref=([\'"])([^\'"]*)\1[^>]*>.*?</a>(?:\s*<br\s*/?>)?', rep, s, flags=re.S)
+
+
 def clean(s, fix_links):
     s = re.sub(r'<script.*?</script>', '', s, flags=re.S)
     s = re.sub(r'<form id="upvote-form".*?</form>', '', s, flags=re.S)
     s = re.sub(r'</?(?:body|html)\b[^>]*>', '', s)
     s = re.sub(r'<a rel="nofollow" href="/blog/\?q=[^"]*">(#[^<]*)</a>', r'<span class="tag">\1</span>', s)
+    s = drop_excluded_links(s)   # before fix_links, which would make them absolute Bear URLs
     s = fix_links(s)
     s = re.sub(r'\n\s*\n\s*\n+', '\n\n', s)
     return s.strip()
@@ -315,7 +333,7 @@ CALENDAR = '''<div class="calendar-card" aria-label="今日">
 
 
 def build(status, images):
-    ok = [p for p, c in status.items() if c == 200]
+    ok = [p for p, c in status.items() if c == 200 and p not in EXCLUDE]
     local = set(ok) | {'/'} | set(SECTIONS)
     fix = make_link_fixer(local)
     home_doc = read(cache_file('/'))
@@ -337,7 +355,7 @@ def build(status, images):
         out(p, re.sub('<[^>]+>', '', title), body, vscript)
 
     groups = OrderedDict()
-    entries = blog_entries(read(cache_file('/blog/')))
+    entries = [e for e in blog_entries(read(cache_file('/blog/'))) if e[1] not in EXCLUDE]
     for dt, href, name in entries:
         groups.setdefault(dt[:4], []).append((dt[5:10], href, name))
     out('/blog/', '博文', f'<h2 class="page-title">博文</h2>\n<p class="page-meta">共 {len(entries)} 篇</p>\n'

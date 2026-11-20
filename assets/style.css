@@ -792,30 +792,8 @@ main .iPad { overflow: auto; }
 .post-body .vertical .tcy { text-combine-upright: all; -webkit-text-combine: horizontal; }
 .post-body .vertical .num-upright { text-orientation: upright; letter-spacing: 0; }
 
-/* Cover pages (食林廣記 · 零, 人間詞話 · 零): title set between two ink rules */
-.post-body .box {
-    display: flex;
-    justify-content: center;
-    padding: 2.5em 0;
-    border-top: 1px solid var(--heading);
-    border-bottom: 1px solid var(--heading);
-}
-.post-body .box .vertical {
-    width: auto;
-    height: auto;
-    column-width: auto;
-    padding: 0;
-    border: 0;
-    font-size: 2.4em;
-    line-height: 1.4;
-    letter-spacing: 0.35em;
-    margin: 0;
-}
-.post-body .box .vertical span { font-size: 0.4em !important; letter-spacing: 0.2em; margin-block-start: 1em; }
-
 @media (max-width: 560px) {
     .post-body .vertical { --band: min(15em, 70vh); font-size: 1em; column-gap: 1.6em; padding: 0.9em 0; }
-    .post-body .box .vertical { font-size: 2em; }
 }
 
 main pre { white-space: pre-wrap; }

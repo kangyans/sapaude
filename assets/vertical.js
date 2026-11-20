@@ -8,8 +8,7 @@
 //    bands and set the height to exactly n bands + gaps, so the box fits its
 //    text and never needs a scrollbar. Re-fits on resize and once fonts load.
 (function () {
-  var boxes = [].slice.call(document.querySelectorAll('.post-body .vertical'))
-    .filter(function (el) { return !el.closest('.box'); });   // covers size themselves
+  var boxes = [].slice.call(document.querySelectorAll('.post-body .vertical'));
   if (!boxes.length) return;
 
   // ---- 1. upright numbers ----
