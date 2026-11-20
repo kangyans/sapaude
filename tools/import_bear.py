@@ -332,41 +332,6 @@ CALENDAR = '''<div class="calendar-card" aria-label="今日">
 </div>'''
 
 
-def movie_rows(m):
-    """影冊: regroup Bear's flat movie grid into Netflix-style rows.
-
-    最近觀看 = the first 12 cards in Bear's order (most recent first); then
-    rating rows, each sorted high to low. assets/rows.js adds the arrows."""
-    cards = []
-    for attrs, title, rating in re.findall(
-            r'<div class="movie-card">\s*<img([^>]*)>\s*<div class="movie-title">(.*?)</div>'
-            r'\s*<div class="movie-rating">(.*?)</div>', m, re.S):
-        x = re.search(r'(\d+(?:\.\d+)?)\s*/\s*10', rating)
-        cards.append({'img': attrs.strip(), 'title': title.strip(), 'rating': rating.strip(),
-                      'score': float(x.group(1)) if x else None})
-    if not cards:
-        return m
-
-    def card(c):
-        return (f'<div class="movie-card"><img {c["img"]} loading="lazy">'
-                f'<div class="movie-title">{c["title"]}</div>'
-                f'<div class="movie-rating">{c["rating"]}</div></div>')
-
-    scored = sorted((c for c in cards if c['score'] is not None), key=lambda c: -c['score'])
-    rows = [('最近觀看', cards[:12]),
-            ('九分以上', [c for c in scored if c['score'] >= 9]),
-            ('八分', [c for c in scored if 8 <= c['score'] < 9]),
-            ('七分及以下', [c for c in scored if c['score'] < 8])]
-    out = [f'<p class="page-meta">共 {len(cards)} 部</p>']
-    for name, items in rows:
-        if not items:
-            continue
-        out.append(f'<section class="row">\n<h3 class="row-title">{name}<span class="row-count">{len(items)}</span></h3>\n'
-                   '<div class="row-viewport">\n<div class="row-track">\n'
-                   + '\n'.join(card(c) for c in items) + '\n</div>\n</div>\n</section>')
-    return '\n'.join(out)
-
-
 def directory(m):
     """資料庫: group each <h4> + <ul> into a directory block, and runs of blocks
     into a two-column grid, like a newspaper's listings page."""
@@ -420,16 +385,13 @@ def build(status, images):
         if p == '/blog/':
             continue
         m = clean(main_of(read(cache_file(p))), fix)
-        if p == '/movies/':
-            m = movie_rows(m)
         if p == '/arxiv/':
             m = directory(m)
         if p == '/twix/':
             m = twix_datelines(m)
             # drop the 說明 line about underlining names/places (no longer underlined)
             m = re.sub(r'<p[^>]*>\s*說明：人名、地名加.*?</p>\s*', '', m, count=1, flags=re.S)
-        script = '<script src="/assets/rows.js" defer></script>\n' if p == '/movies/' else ''
-        out(p, name, f'<h2 class="page-title">{name}</h2>\n{m}', script)
+        out(p, name, f'<h2 class="page-title">{name}</h2>\n{m}')
 
     hm = clean(main_of(home_doc), fix)
     # 專欄: rebuild Bear's series box as a grid of numbered tiles
