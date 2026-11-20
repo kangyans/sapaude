@@ -291,7 +291,7 @@ def archive(groups):
     return '\n'.join(out)
 
 
-CALENDAR = '''<section class="calendar-card" aria-label="今日">
+CALENDAR = '''<div class="calendar-card" aria-label="今日">
   <div class="calendar-top">
     <span id="cal-ganzhi"></span>
     <span id="cal-year"></span>
@@ -311,7 +311,7 @@ CALENDAR = '''<section class="calendar-card" aria-label="今日">
     <span class="yi"><strong>宜</strong>讀書・行路・作文</span>
     <span class="seal" id="cal-zodiac"></span>
   </div>
-</section>'''
+</div>'''
 
 
 def build(status, images):
@@ -347,16 +347,23 @@ def build(status, images):
         out(p, name, f'<h2 class="page-title">{name}</h2>\n{m}')
 
     hm = clean(main_of(home_doc), fix)
-    sm = re.search(r'<div class="series-box">.*?</div>\s*</div>', hm, re.S)
+    # 專欄: rebuild Bear's series box as a grid of numbered tiles
+    sm = re.search(r'<div class="series-list">(.*?)</div>', hm, re.S)
     series = ''
     if sm:
-        series = sm.group(0).replace('<div class="series-box">', '<nav class="series-box" aria-label="專欄">', 1)
-        series = series[:series.rfind('</div>')] + '</nav>'
+        tiles = []
+        for i, (href, name) in enumerate(re.findall(r'<a href=[\'"]([^\'"]+)[\'"]>(.*?)</a>', sm.group(1), re.S)):
+            name = re.sub(r'^\s*(?:<|&lt;|《|〈)|(?:>|&gt;|》|〉)\s*$', '', name.strip())
+            no = '壹貳參肆伍陸柒捌玖拾'[i] if i < 10 else str(i + 1)
+            tiles.append(f'<li><a href="{href}"><span class="series-no">{no}</span>'
+                         f'<span class="series-name">{name}</span></a></li>')
+        series = ('<nav class="series" aria-label="專欄">\n<h2 class="series-heading">專欄</h2>\n'
+                  '<ul class="series-grid">\n' + '\n'.join(tiles) + '\n</ul>\n</nav>')
     hgroups = OrderedDict()
     for y, block in re.findall(r'<h4>(\d{4})</h4>\s*</p>\s*<p>(.*?)</p>', hm, re.S):
         for d, href, name in re.findall(r'(\d\d-\d\d)\s*<a href=[\'"]([^\'"]+)[\'"]>(.*?)</a>', block, re.S):
             hgroups.setdefault(y, []).append((d, href, name.strip()))
-    out('/', '', f'<div class="home-top">\n{CALENDAR}\n{series}\n</div>\n' + archive(hgroups),
+    out('/', '', f'<section class="home-top">\n{CALENDAR}\n{series}\n</section>\n' + archive(hgroups),
         '<script src="/assets/calendar.js"></script>\n')
 
     failed = {p: c for p, c in status.items() if c != 200}
