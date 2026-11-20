@@ -468,6 +468,8 @@ ul.blog-posts li a { text-decoration: none; }
 
 .calendar-lunar {
     writing-mode: vertical-rl;
+    white-space: nowrap;      /* each line stays one column; the row grows to fit it */
+    flex: 0 0 auto;
     font-size: 1em;
     letter-spacing: 0.22em;
     line-height: 1;
