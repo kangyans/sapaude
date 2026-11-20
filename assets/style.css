@@ -836,7 +836,7 @@ p.tags {
 .twix > br { display: none; }
 .twix .container {
     display: grid;
-    grid-template-columns: 1fr 138px;
+    grid-template-columns: 1fr 160px;
     gap: 0;
     margin: 0;
     border-top: 1px solid var(--rule-strong);
@@ -844,7 +844,7 @@ p.tags {
 .twix .container:first-of-type { border-top: 1px solid var(--heading); }
 .twix .container:last-of-type { border-bottom: 1px solid var(--heading); }
 .twix .content {
-    padding: 18px 26px 18px 0;
+    padding: 24px 32px 24px 0;
     font-size: 0.98em;
     line-height: 1.85;
     text-align: justify;
@@ -853,7 +853,7 @@ p.tags {
 .twix .content > :last-child { margin-bottom: 0; }
 .twix .content img { display: block; margin: 12px 0; }
 .twix .notes {
-    padding: 20px 4px 18px 22px;
+    padding: 26px 6px 24px 30px;
     border-left: 1px solid var(--rule-strong);
     font-family: var(--font-kai);
     font-size: 0.8em;
@@ -870,8 +870,8 @@ p.tags {
 
 @media (max-width: 640px) {
     .twix .container { grid-template-columns: 1fr; }
-    .twix .content { padding: 16px 0 6px; }
-    .twix .notes { border-left: 0; padding: 6px 0 16px; }
+    .twix .content { padding: 20px 0 10px; }
+    .twix .notes { border-left: 0; padding: 10px 0 22px; }
     .post-heading { font-size: 1.5em; }
 }
 
