@@ -852,7 +852,7 @@ p.tags {
     color: var(--muted);
 }
 
-/* dateline: small year over a large MM/DD, in the site's numeral face */
+/* dateline: MM/DD in the site's numeral face (year only in the datetime attribute) */
 .twix-date { margin: 0; }
 .twix-date time {
     display: flex;
@@ -863,7 +863,6 @@ p.tags {
     line-height: 1.15;
     color: var(--muted);
 }
-.twix-date .y { font-size: 0.95em; letter-spacing: 0.14em; }
 .twix-date .md { font-size: 1.75em; letter-spacing: 0.02em; color: var(--heading); }
 
 /* side notes: marginalia under the dateline, ruled off by a hairline */
@@ -891,7 +890,6 @@ p.tags {
     .twix .container { grid-template-columns: 1fr; }
     .twix .content { padding: 20px 0 10px; }
     .twix .notes { border-left: 0; padding: 10px 0 22px; }
-    .twix-date time { flex-direction: row; align-items: baseline; gap: 10px; }
     .twix-date .md { font-size: 1.3em; }
     .twix-date:not(:last-child) { padding-bottom: 8px; margin-bottom: 8px; }
     .post-heading { font-size: 1.5em; }

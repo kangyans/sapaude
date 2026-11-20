@@ -333,11 +333,11 @@ CALENDAR = '''<div class="calendar-card" aria-label="今日">
 
 
 def twix_datelines(m):
-    """閒話: turn each note's '公佈於 MM/DD/YYYY' into a dateline (year over MM/DD)."""
+    """閒話: turn each note's '公佈於 MM/DD/YYYY' into a dateline showing MM/DD (year kept in datetime)."""
     def rep(x):
         mo, d, y = x.group(1), x.group(2), x.group(3)
         return (f'<p class="twix-date"><time datetime="{y}-{mo}-{d}">'
-                f'<span class="y">{y}</span><span class="md">{mo}/{d}</span></time>')
+                f'<span class="md">{mo}/{d}</span></time>')
     return re.sub(r'<p>\s*公佈於\s*(\d{2})/(\d{2})/(\d{4})\s*(?:</p>)?', lambda x: rep(x) + '</p>', m)
 
 
