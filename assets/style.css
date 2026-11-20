@@ -404,7 +404,7 @@ ul.blog-posts li a { text-decoration: none; }
 
 .calendar-day {
     font-family: var(--font-title);
-    font-size: 4.4em;
+    font-size: 3.4em;
     line-height: 1;
     color: var(--accent);
     margin: 6px 0 4px;
@@ -791,7 +791,7 @@ p.tags {
     .calendar-top, .calendar-bottom { padding: 5px 12px; font-size: 0.7em; letter-spacing: 0.12em; min-height: 0; }
     .calendar-content { padding: 10px 14px; gap: 22px; }
     .calendar-month { font-size: 0.78em; letter-spacing: 0.2em; padding-left: 0.2em; }
-    .calendar-day { font-size: 2.6em; margin: 2px 0; }
+    .calendar-day { font-size: 2.2em; margin: 2px 0; }
     .calendar-week { font-size: 0.72em; letter-spacing: 0.15em; padding-left: 0.15em; }
     .calendar-right { padding-left: 14px; gap: 6px; }
     .calendar-lunar { font-size: 0.82em; letter-spacing: 0.12em; }
