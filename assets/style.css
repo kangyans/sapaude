@@ -2,18 +2,56 @@
    Sapere Aude — shared stylesheet
    ===================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Marcellus+SC&family=Noto+Serif+TC:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap");
+
+/* ---------- Latin text: Times New Roman ----------
+   "Latin Times" covers only Latin letters, digits and basic symbols, so every
+   stack below can start with it: English and numbers render in Times New
+   Roman, while Chinese — and CJK-style punctuation such as —— “” … — fall
+   through to the Song/Kai fonts after it. Times New Roman's digits are
+   tabular, so dates line up. */
+@font-face {
+    font-family: "Latin Times";
+    font-style: normal;
+    font-weight: 100 500;
+    src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Times-Roman"),
+         local("Liberation Serif"), local("Tinos");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+0100-017F, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+20AC, U+2122;
+}
+@font-face {
+    font-family: "Latin Times";
+    font-style: normal;
+    font-weight: 600 900;
+    src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT"), local("Times-Bold"),
+         local("Liberation Serif Bold"), local("Tinos Bold");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+0100-017F, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+20AC, U+2122;
+}
+@font-face {
+    font-family: "Latin Times";
+    font-style: italic;
+    font-weight: 100 500;
+    src: local("Times New Roman Italic"), local("TimesNewRomanPS-ItalicMT"), local("Times-Italic"),
+         local("Liberation Serif Italic"), local("Tinos Italic");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+0100-017F, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+20AC, U+2122;
+}
+@font-face {
+    font-family: "Latin Times";
+    font-style: italic;
+    font-weight: 600 900;
+    src: local("Times New Roman Bold Italic"), local("TimesNewRomanPS-BoldItalicMT"), local("Times-BoldItalic"),
+         local("Liberation Serif Bold Italic"), local("Tinos Bold Italic");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+0100-017F, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+20AC, U+2122;
+}
 
 /* ---------- Tokens ---------- */
 :root {
     --width: 700px;
 
-    --font-body: "Iowan Old Style", "Songti TC", "Songti SC", "Noto Serif TC", "Source Han Serif TC", serif;
-    --font-kai: "Kaiti TC", "Kaiti SC", "STKaiti", "TW-Kai", "BiauKai", "KaiTi", "Noto Serif TC", serif;
-    --font-title: "Marcellus SC", "Cormorant Garamond", Georgia, serif;
-    /* Dates/years: needs real tabular figures so every MM-DD is the same width
-       (Marcellus SC has only proportional digits). */
-    --font-num: "EB Garamond", "Iowan Old Style", Georgia, serif;
+    --font-latin: "Latin Times";        /* Latin-only face; CJK falls through */
+    --font-body: var(--font-latin), "Songti TC", "Songti SC", "Noto Serif TC", "Source Han Serif TC", serif;
+    --font-kai: var(--font-latin), "Kaiti TC", "Kaiti SC", "STKaiti", "TW-Kai", "BiauKai", "KaiTi", "Noto Serif TC", serif;
+    --font-title: "Latin Times", "Times New Roman", Times, serif;
+    --font-num: "Latin Times", "Times New Roman", Times, serif;   /* digits are tabular */
     --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
     --bg: #f7f4ec;
