@@ -395,11 +395,10 @@ def directory(m):
 
 
 def twix_datelines(m):
-    """閒話: turn each note's '公佈於 MM/DD/YYYY' into a dateline showing MM/DD (year kept in datetime)."""
+    """閒話: normalise each note's '公佈於 MM/DD/YYYY' to '公佈於 YYYY/MM/DD'."""
     def rep(x):
         mo, d, y = x.group(1), x.group(2), x.group(3)
-        return (f'<p class="twix-date"><time datetime="{y}-{mo}-{d}">'
-                f'<span class="md">{mo}/{d}</span></time>')
+        return (f'<p class="twix-date">公佈於 <time datetime="{y}-{mo}-{d}">{y}/{mo}/{d}</time>')
     return re.sub(r'<p>\s*公佈於\s*(\d{2})/(\d{2})/(\d{4})\s*(?:</p>)?', lambda x: rep(x) + '</p>', m)
 
 
@@ -423,6 +422,8 @@ def build(status, images):
         # vertical-text posts get the band-fitting script (see assets/vertical.js)
         has_vertical = re.search(r'class=["\']?[^"\'>]*\bvertical\b', body)  # quoted or bare class=vertical
         vscript = '<script src="/assets/vertical.js" defer></script>\n' if has_vertical else ''
+        if p == '/archive/twix/2025/':          # same note style as /twix/
+            body = twix_datelines(body)
         out(p, re.sub('<[^>]+>', '', title), body, vscript)
 
     groups = OrderedDict()

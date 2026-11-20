@@ -68,7 +68,7 @@
     --accent-soft: rgba(168, 56, 42, 0.08);
     --rating: #9a6a1f;
     --twix-paper: #eaeee9;      /* 閒話 entry card */
-    --twix-sticky: #ffff99;     /* 閒話 date sticky note */
+    --twix-sticky: #f8f0c6;     /* 閒話 date sticky note: soft butter yellow */
     --twix-ink: #1f1d19;
     --twix-shadow: rgba(0, 0, 0, 0.35);
     --shadow: 0 1px 2px rgba(60, 50, 30, 0.05), 0 6px 20px rgba(60, 50, 30, 0.07);
@@ -92,7 +92,7 @@
         --accent-soft: rgba(224, 122, 100, 0.1);
         --rating: #d6a957;
         --twix-paper: #2b302c;
-        --twix-sticky: #4d4a22;
+        --twix-sticky: #3e3b2a;
         --twix-ink: #e6e1d6;
         --twix-shadow: rgba(0, 0, 0, 0.55);
         --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
@@ -923,14 +923,14 @@ p.tags {
 .twix .notes p, .post-body > .container:has(> .notes) > .notes p { margin: 0; }
 .twix .notes p + p { margin-top: 6px; }
 
-/* the MM/DD on the sticky note */
-.twix-date { margin: 0 0 4px; }
+/* "公佈於 YYYY/MM/DD" on the sticky note */
+.twix-date { margin: 0 0 4px; font-family: var(--font-kai); letter-spacing: 0.06em; }
 .twix-date time {
     font-family: var(--font-num);
     font-variant-numeric: tabular-nums lining-nums;
     font-feature-settings: "tnum" 1, "lnum" 1;
-    font-size: 1.15em;
-    letter-spacing: 0.04em;
+    font-size: 1.05em;
+    letter-spacing: 0.02em;
     color: var(--twix-ink);
 }
 
