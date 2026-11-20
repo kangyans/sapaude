@@ -67,6 +67,10 @@
     --accent: #a8382a;          /* 硃砂 cinnabar */
     --accent-soft: rgba(168, 56, 42, 0.08);
     --rating: #9a6a1f;
+    --twix-paper: #eaeee9;      /* 閒話 entry card */
+    --twix-sticky: #ffff99;     /* 閒話 date sticky note */
+    --twix-ink: #1f1d19;
+    --twix-shadow: rgba(0, 0, 0, 0.35);
     --shadow: 0 1px 2px rgba(60, 50, 30, 0.05), 0 6px 20px rgba(60, 50, 30, 0.07);
     --shadow-lift: 0 2px 4px rgba(60, 50, 30, 0.08), 0 14px 30px rgba(60, 50, 30, 0.14);
 
@@ -87,6 +91,10 @@
         --accent: #e07a64;
         --accent-soft: rgba(224, 122, 100, 0.1);
         --rating: #d6a957;
+        --twix-paper: #2b302c;
+        --twix-sticky: #4d4a22;
+        --twix-ink: #e6e1d6;
+        --twix-shadow: rgba(0, 0, 0, 0.55);
         --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
         --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 14px 30px rgba(0, 0, 0, 0.4);
         color-scheme: dark;
@@ -867,61 +875,69 @@ p.tags {
 .navigation-container .nav-next { margin-left: auto; }
 
 /* ---------- 閒話 /twix/ ---------- */
-.twix > br { display: none; }
-.twix .container {
-    display: grid;
-    grid-template-columns: 1fr 160px;
-    gap: 0;
-    margin: 0;
-    border-top: 1px solid var(--rule-strong);
+/* Back to the original 閒話 look (as kept on the twix_2025 archive): each
+   entry is a paper card with a drop shadow and a yellow sticky note beside
+   it for the date. Colours are tokens so dark mode stays readable; the same
+   rules also cover the twix_2025 archive page, whose own inline styles set
+   light backgrounds without a text colour. */
+.twix .container,
+.post-body > .container:has(> .notes) {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin: 0 0 26px;
+    border: 0;
 }
-.twix .container:first-of-type { border-top: 1px solid var(--heading); }
-.twix .container:last-of-type { border-bottom: 1px solid var(--heading); }
-.twix .content {
-    padding: 24px 32px 24px 0;
-    font-size: 0.98em;
+.twix > br, .container:has(> .notes) + br { display: none; }   /* Bear spacer <br>s between entries */
+
+.twix .content,
+.post-body > .container:has(> .notes) > .content {
+    flex: 3;
+    min-width: 0;
+    background: var(--twix-paper);
+    color: var(--twix-ink);
+    padding: 20px 22px;
+    font-size: 0.95em;
     line-height: 1.85;
     text-align: justify;
-    min-width: 0;
+    box-shadow: 5px 5px 10px var(--twix-shadow);
 }
-.twix .content > :last-child { margin-bottom: 0; }
+.twix .content > :last-child,
+.post-body > .container:has(> .notes) > .content > :last-child { margin-bottom: 0; }
 .twix .content img { display: block; margin: 12px 0; }
-.twix .notes {
-    padding: 26px 6px 24px 30px;
-    border-left: 1px solid var(--rule-strong);
-    font-size: 0.8em;
-    line-height: 1.7;
-    color: var(--muted);
-}
+.twix .content a, .post-body > .container:has(> .notes) a { color: var(--twix-ink); }
+.twix .content a:hover, .post-body > .container:has(> .notes) a:hover { color: var(--accent); }
 
-/* dateline: MM/DD in the site's numeral face (year only in the datetime attribute) */
-.twix-date { margin: 0; }
+.twix .notes,
+.post-body > .container:has(> .notes) > .notes {
+    flex: 1;
+    min-width: 0;
+    background: var(--twix-sticky);
+    color: var(--twix-ink);
+    padding: 10px 12px;
+    font-size: 0.78em;
+    line-height: 1.65;
+    text-align: justify;
+    box-shadow: 5px 5px 5px var(--twix-shadow);
+}
+.twix .notes p, .post-body > .container:has(> .notes) > .notes p { margin: 0; }
+.twix .notes p + p { margin-top: 6px; }
+
+/* the MM/DD on the sticky note */
+.twix-date { margin: 0 0 4px; }
 .twix-date time {
-    display: flex;
-    flex-direction: column;
     font-family: var(--font-num);
     font-variant-numeric: tabular-nums lining-nums;
     font-feature-settings: "tnum" 1, "lnum" 1;
-    line-height: 1.15;
-    color: var(--muted);
+    font-size: 1.15em;
+    letter-spacing: 0.04em;
+    color: var(--twix-ink);
 }
-.twix-date .md { font-size: 1.2em; letter-spacing: 0.04em; color: var(--heading); }  /* ≈ the post-list dates */
 
-/* side notes: marginalia under the dateline, ruled off by a hairline */
-.twix .notes p:not(.twix-date) {
-    margin: 0;
-    text-align: left;
-    font-size: 0.98em;
-    line-height: 1.7;
+@media (max-width: 640px) {
+    .twix .container, .post-body > .container:has(> .notes) { flex-direction: column; align-items: stretch; gap: 10px; }
+    .twix .notes, .post-body > .container:has(> .notes) > .notes { align-self: flex-end; max-width: 75%; }
 }
-.twix-date:not(:last-child) {
-    padding-bottom: 12px;
-    margin-bottom: 12px;
-    border-bottom: 1px solid var(--rule-strong);
-}
-.twix .notes p:not(.twix-date) + p { margin-top: 8px; }
-.twix .notes a { color: var(--text); text-decoration-color: var(--accent); }
-.twix .notes a:hover { color: var(--accent); }
 
 /* ---------- Cards from Bear markup ---------- */
 .custom-box { margin: 0; }
@@ -929,11 +945,6 @@ p.tags {
 .game-rating span { margin-left: 0.3em; opacity: 0.8; }
 
 @media (max-width: 640px) {
-    .twix .container { grid-template-columns: 1fr; }
-    .twix .content { padding: 20px 0 10px; }
-    .twix .notes { border-left: 0; padding: 10px 0 22px; }
-    .twix-date .md { font-size: 1.15em; }
-    .twix-date:not(:last-child) { padding-bottom: 8px; margin-bottom: 8px; }
     .post-heading { font-size: 1.5em; }
 }
 
@@ -988,8 +999,8 @@ p.tags {
     ul.blog-posts li time { font-size: 0.92em; flex-basis: 3.1em; }
 
     /* 閒話, tags, prev/next, footer */
-    .twix .content { font-size: 0.94em; }
-    .twix .notes { font-size: 0.72em; }
+    .twix .content { font-size: 0.92em; padding: 16px 16px; }
+    .twix .notes { font-size: 0.76em; }
     .tag { font-size: 0.75em; }
     .navigation-container a { font-size: 0.78em; }
     .game-title, .movie-title { font-size: 0.82rem; }
@@ -1040,34 +1051,43 @@ p.tags {
 .row-track::-webkit-scrollbar { display: none; }
 .row-track.is-gliding { scroll-snap-type: none; }   /* rows.js animates; snap would fight it */
 
-/* Hover: the whole card (poster + caption) magnifies smoothly. A short delay
-   keeps cards from flickering as the pointer passes over a row. Cards at the
-   visible edges grow inward (rows.js marks them) so the track doesn't clip them. */
+/* Hover: the whole card (poster + caption) magnifies.
+   - Grows only after the pointer rests ~0.15s, so a fast sweep across a row
+     doesn't set every card pulsing.
+   - Shrinks quickly with no delay, and keeps its raised z-index until it has
+     finished shrinking (z-index switches at the end of the transition), so a
+     card leaving never slips under the one arriving — the overlap glitch.
+   - Cards at the visible edges grow inward (rows.js marks them). */
 .row-track > .movie-card,
 .row-track > .game-card {
+    --zoom: 1.1;
     scroll-snap-align: start;
     position: relative;
+    z-index: 1;
     transform-origin: center center;
-    transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+                z-index 0s linear 0.22s;
     will-change: transform;
 }
+.row-games .row-track > .game-card { --zoom: 1.05; }   /* wide covers need less */
 .row-track > .edge-start { transform-origin: left center; }
 .row-track > .edge-end   { transform-origin: right center; }
 .row-track > .movie-card img,
 .row-track > .game-card img {
-    transition: box-shadow 0.38s ease;
+    transition: box-shadow 0.22s ease;
 }
 .row-track > .movie-card:hover,
 .row-track > .game-card:hover {
-    z-index: 2;
-    transform: scale(1.14);
-    transition-delay: 0.1s;
+    z-index: 3;
+    transform: scale(var(--zoom));
+    transition: transform 0.34s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s,
+                z-index 0s;
 }
 .row-track > .movie-card:hover img,
 .row-track > .game-card:hover img {
     transform: none;                        /* the card scales, not just the image */
     box-shadow: var(--shadow-lift);
-    transition-delay: 0.1s;
+    transition: box-shadow 0.34s ease 0.15s;
 }
 
 /* fade the edge that has more to see */
@@ -1095,7 +1115,7 @@ p.tags {
     top: 14px;
     bottom: 94px;                          /* poster area only: track padding + captions */
     width: 34px;
-    z-index: 3;                            /* above a magnified card */
+    z-index: 4;                            /* above a magnified card */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1166,11 +1186,11 @@ p.tags {
 .dir-group:nth-child(-n+2) { border-top: 0; }
 
 .directory h4 {
-    margin: 12px 0 8px;
-    font-size: 0.82em;
-    font-weight: 400;
-    letter-spacing: 0.4em;
-    color: var(--accent);
+    margin: 14px 0 10px;
+    font-size: 1.02em;          /* close to the entry names, a step below the h3 */
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    color: var(--heading);      /* ink, not red: red reads as a link */
 }
 
 .directory ul { list-style: none; margin: 0; padding: 0; }
