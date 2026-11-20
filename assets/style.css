@@ -695,21 +695,27 @@ main .iPad { overflow: auto; }
 }
 
 .post-body .vertical {
-    --band: 20em;                       /* characters per vertical line */
+    --band: min(20em, 72vh);            /* length of a vertical line; never taller than the screen */
+    box-sizing: content-box;            /* vertical.js sets the content height = bands exactly */
     display: block;
     writing-mode: vertical-rl;
     width: 100%;
     height: var(--band);                /* one band until vertical.js measures */
     column-width: var(--band);
-    column-gap: 1.6em;
+    column-gap: 2.2em;
     column-rule: 1px solid var(--rule-strong);
     column-fill: auto;
     margin: 8px 0 0;
+    padding: 1.1em 0;
+    border-top: 1px solid var(--heading);     /* the 版 frame: ink rule above … */
+    border-bottom: 1px solid var(--heading);  /* … and below the bands */
     font-family: var(--font-kai);
     font-size: 1.08em;
-    line-height: 1.9;
-    letter-spacing: 0.04em;
+    line-height: 1.95;
+    letter-spacing: 0.05em;
     text-align: justify;
+    text-autospace: normal;             /* thin space between CJK and Latin where supported */
+    hanging-punctuation: allow-end;
     color: var(--text);
 }
 
@@ -719,19 +725,72 @@ main .iPad { overflow: auto; }
 .post-body .vertical .main,
 .post-body .vertical .context { line-height: inherit; }
 
-.post-body .vertical p,
-.post-body .vertical .note { margin: 0; margin-block-end: 0.5em; }
+/* paragraphs: 首行縮進兩格 */
+.post-body .vertical p {
+    margin: 0;
+    margin-block-end: 0.35em;
+    text-indent: 2em;
+}
 
+/* section heads: bold, set apart by a little space on each side */
 .post-body .vertical h2,
 .post-body .vertical h3 {
     margin: 0;
-    margin-block: 0.4em 0.5em;
-    font-size: 1.1em;
-    letter-spacing: 0.12em;
+    margin-block: 0.9em 0.6em;
+    font-size: 1.12em;
+    font-weight: 700;
+    line-height: 1.6;
+    letter-spacing: 0.15em;
+    text-indent: 0 !important;
     color: var(--heading);
 }
 .post-body .vertical > h2:first-child,
-.post-body .vertical > h3:first-child { margin-block-start: 0; }
+.post-body .vertical > h3:first-child,
+.post-body .vertical > .frame > h2:first-child,
+.post-body .vertical > .frame > h3:first-child,
+.post-body .vertical > .main > h3:first-child { margin-block-start: 0; }
+
+/* 專名號: names marked with <ins> get their line on the left of the characters */
+.post-body .vertical ins {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--muted);
+    text-underline-position: left;
+    text-underline-offset: 0.2em;
+}
+
+/* 朱批: inline annotations (span.note, coloured small spans) in one readable size, cinnabar */
+.post-body .vertical span.note,
+.post-body .vertical span[style*="color"] {
+    color: var(--accent) !important;
+    font-size: 0.78em !important;
+    line-height: inherit;
+    letter-spacing: 0.02em;
+}
+.post-body .vertical span[style*="font-size:15px"],
+.post-body .vertical span[style*="font-size: 15px"] { font-size: 0.8em !important; }
+
+/* commentary blocks (div.note, 評說) and footnotes: quieter than the text */
+.post-body .vertical div.note {
+    margin: 0;
+    margin-block-end: 0.6em;
+    font-size: 0.95em !important;
+    line-height: inherit !important;
+    text-indent: 2em !important;
+    color: var(--text);
+}
+.post-body .vertical .footnote {
+    padding: 0 !important;
+    margin-block-start: 0.8em;
+    font-size: 0.8em !important;
+    line-height: 1.8 !important;
+    color: var(--muted);
+}
+.post-body .vertical .footnote p { text-indent: 0; }
+
+/* 縱中橫: short numbers set upright (vertical.js wraps them) */
+.post-body .vertical .tcy { text-combine-upright: all; -webkit-text-combine: horizontal; }
+.post-body .vertical .num-upright { text-orientation: upright; letter-spacing: 0; }
 
 /* Cover pages (食林廣記 · 零, 人間詞話 · 零): title set between two ink rules */
 .post-body .box {
@@ -745,6 +804,8 @@ main .iPad { overflow: auto; }
     width: auto;
     height: auto;
     column-width: auto;
+    padding: 0;
+    border: 0;
     font-size: 2.4em;
     line-height: 1.4;
     letter-spacing: 0.35em;
@@ -753,7 +814,7 @@ main .iPad { overflow: auto; }
 .post-body .box .vertical span { font-size: 0.4em !important; letter-spacing: 0.2em; margin-block-start: 1em; }
 
 @media (max-width: 560px) {
-    .post-body .vertical { --band: 15em; font-size: 1em; column-gap: 1.3em; }
+    .post-body .vertical { --band: min(15em, 70vh); font-size: 1em; column-gap: 1.6em; padding: 0.9em 0; }
     .post-body .box .vertical { font-size: 2em; }
 }
 
