@@ -329,12 +329,12 @@ ul.blog-posts li a { text-decoration: none; }
 }
 
 /* ---------- Home: 今日 panel (calendar + 專欄) ---------- */
-/* One card, two columns: a compact desk calendar on the left, the 專欄
-   tiles on the right. Both share the card's height, so neither looks
+/* One card, two columns: the 專欄 tiles on the left, a compact desk
+   calendar on the right. Both share the card's height, so neither looks
    stranded. Stacks on phones. */
 .home-top {
     display: grid;
-    grid-template-columns: 290px 1fr;
+    grid-template-columns: 1fr 290px;   /* 專欄 left, calendar right */
     margin: 44px 0 0;
     background: var(--surface);
     border: 1px solid var(--rule);
@@ -348,7 +348,8 @@ ul.blog-posts li a { text-decoration: none; }
     display: flex;
     flex-direction: column;
     font-family: var(--font-kai);
-    border-right: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+    order: 2;
 }
 
 .calendar-top,
@@ -498,7 +499,7 @@ ul.blog-posts li a { text-decoration: none; }
 }
 
 @media (max-width: 640px) {
-    .calendar-card { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .calendar-card { border-left: 0; border-bottom: 1px solid var(--rule); order: 0; }
     .calendar-content { justify-content: center; gap: 28px; }
     .calendar-left { flex: 0 0 auto; }
     .series-grid { padding: 12px; gap: 8px; }
