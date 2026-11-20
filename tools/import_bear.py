@@ -10,10 +10,14 @@ Usage (from anywhere):
     python3 tools/import_bear.py --offline  # rebuild from the cached download
 
 Downloads are cached in .bear-cache/ (git-ignored). Only the standard library
-is used. Images stay on their original hosts. The 聯繫 link is taken from the
-nav of the downloaded Bear home page.
+is used. Images in the pages are downloaded once into assets/images/ (named by
+a hash of their URL, so re-runs skip them) and the pages point at the local
+copies; with --offline, images not yet downloaded keep their remote URL.
+The 聯繫 link is taken from the nav of the downloaded Bear home page.
 """
 import argparse
+import glob
+import hashlib
 import html
 import json
 import os
@@ -27,7 +31,9 @@ from collections import OrderedDict
 BASE = 'https://kangyan.bearblog.dev'
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(REPO, '.bear-cache')
-UA = 'Mozilla/5.0 (static-site importer)'
+IMAGES = os.path.join(REPO, 'assets', 'images')
+UA = 'Mozilla/5.0 (static-site importer)'  # Bear pages
+IMG_UA = 'sapaude-site-importer/1.0 (python-urllib)'  # image hosts; Wikimedia rejects browser-like UAs
 
 # Section pages: Bear path -> nav label
 SECTIONS = OrderedDict([('/blog/', '博文'), ('/twix/', '閒話'), ('/movies/', '影冊'),
@@ -108,6 +114,72 @@ def crawl():
         json.dump(status, f, ensure_ascii=False, indent=1)
     return status
 
+
+
+# ---------------------------------------------------------------- images
+
+IMAGE_EXT = {'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp', 'image/gif': '.gif',
+             'image/svg+xml': '.svg', 'image/avif': '.avif'}
+
+
+class ImageStore:
+    """Downloads remote <img> sources into assets/images/ and rewrites src."""
+
+    def __init__(self, online):
+        self.online = online
+        self.done = {}      # url -> local path or None (failed)
+        self.failed = []
+        os.makedirs(IMAGES, exist_ok=True)
+
+    def local(self, url):
+        if url in self.done:
+            return self.done[url]
+        key = hashlib.sha1(html.unescape(url).encode()).hexdigest()[:16]
+        found = glob.glob(os.path.join(IMAGES, key + '.*'))
+        path = None
+        if found:
+            path = '/assets/images/' + os.path.basename(found[0])
+        elif self.online:
+            path = self._download(html.unescape(url), key)
+        self.done[url] = path
+        return path
+
+    def _download(self, url, key):
+        for attempt in range(3):
+            try:
+                req = urllib.request.Request(url, headers={'User-Agent': IMG_UA})
+                with urllib.request.urlopen(req, timeout=60) as r:
+                    ctype = r.headers.get_content_type()
+                    data = r.read()
+                ext = IMAGE_EXT.get(ctype)
+                if not ext:
+                    self.failed.append((url, ctype))
+                    return None
+                name = key + ext
+                with open(os.path.join(IMAGES, name), 'wb') as f:
+                    f.write(data)
+                print(f'  image {len(data) // 1024:>5} KB  {url[:80]}', flush=True)
+                time.sleep(0.3)
+                return '/assets/images/' + name
+            except urllib.error.HTTPError as e:
+                if e.code == 429 and attempt < 2:
+                    time.sleep(15 * (attempt + 1))
+                    continue
+                self.failed.append((url, e.code))
+                return None
+            except (urllib.error.URLError, TimeoutError) as e:
+                if attempt < 2:
+                    time.sleep(5)
+                    continue
+                self.failed.append((url, str(e)))
+                return None
+
+    def rewrite(self, doc):
+        def rep(m):
+            before, q, url = m.group(1), m.group(2), m.group(3)
+            new = self.local(url)
+            return f'<img{before}src={q}{new}{q}' if new else m.group(0)
+        return re.sub(r'<img([^>]*?\s)src=([\'"])(https?://[^\'"]+)\2', rep, doc)
 
 # ---------------------------------------------------------------- converting
 
@@ -242,7 +314,7 @@ CALENDAR = '''<section class="calendar-card" aria-label="今日">
 </section>'''
 
 
-def build(status):
+def build(status, images):
     ok = [p for p, c in status.items() if c == 200]
     local = set(ok) | {'/'} | set(SECTIONS)
     fix = make_link_fixer(local)
@@ -250,7 +322,7 @@ def build(status):
     nav_items = list(SECTIONS.items()) + [(contact_href(home_doc), '聯繫')]
 
     def out(path, title, body, script=''):
-        write(path, page(nav_items, path, title, body, script))
+        write(path, images.rewrite(page(nav_items, path, title, body, script)))
 
     for p in ok:
         doc = read(cache_file(p))
@@ -292,6 +364,10 @@ def build(status):
           f'{len(entries)} posts in 博文; {sum(len(v) for v in hgroups.values())} on home')
     if failed:
         print('not fetched (left linking to Bear):', failed)
+    n_local = sum(1 for v in images.done.values() if v)
+    print(f'images: {n_local}/{len(images.done)} local')
+    for url, why in images.failed:
+        print(f'  image not downloaded ({why}): {url}')
 
 
 def main():
@@ -303,7 +379,7 @@ def main():
             status = {k: int(v) for k, v in json.load(f).items()}
     else:
         status = crawl()
-    build(status)
+    build(status, ImageStore(online=not args.offline))
 
 
 if __name__ == '__main__':
