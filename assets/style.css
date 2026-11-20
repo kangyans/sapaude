@@ -2,7 +2,7 @@
    Sapere Aude — shared stylesheet
    ===================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Noto+Serif+TC:wght@400;600&display=swap");
 
 /* ---------- Latin text: Times New Roman ----------
    "Latin Times" covers only Latin letters, digits and basic symbols, so every
@@ -52,6 +52,7 @@
     --font-kai: var(--font-latin), "Kaiti TC", "Kaiti SC", "STKaiti", "TW-Kai", "BiauKai", "KaiTi", "Noto Serif TC", serif;
     --font-title: "Latin Times", "Times New Roman", Times, serif;
     --font-num: "Latin Times", "Times New Roman", Times, serif;   /* digits are tabular */
+    --font-masthead: "Marcellus SC", "Latin Times", "Times New Roman", serif;   /* "Sapere Aude" only */
     --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
     --bg: #f7f4ec;
@@ -241,7 +242,7 @@ time {
 
 .site-title h1 {
     margin: 0;
-    font-family: var(--font-title);
+    font-family: var(--font-masthead);
     font-size: 2.6em;
     font-weight: 400;
     letter-spacing: 0.12em;
