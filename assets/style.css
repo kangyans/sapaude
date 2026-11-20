@@ -528,3 +528,183 @@ ul.blog-posts li a { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
 }
+
+/* =====================================================
+   Imported Bear content
+   ===================================================== */
+
+/* ---------- Post ---------- */
+.post-header { margin: 52px 0 32px; text-align: center; }
+.post-heading {
+    margin: 0 0 10px;
+    font-size: 1.85em;
+    letter-spacing: 0.12em;
+}
+.post-header time {
+    font-family: var(--font-title);
+    font-size: 0.85em;
+    letter-spacing: 0.15em;
+}
+.post-header::after {
+    content: "";
+    display: block;
+    width: 36px;
+    height: 2px;
+    margin: 22px auto 0;
+    background: var(--accent);
+    opacity: 0.7;
+}
+
+.post-body > p { text-align: justify; }
+.post-body ins { text-decoration-color: var(--rule-strong); text-underline-offset: 0.25em; }
+.post-body mark { background: rgba(214, 169, 87, 0.3); color: inherit; padding: 0 0.15em; border-radius: 2px; }
+.post-body h2, .post-body h3 { letter-spacing: 0.08em; }
+.post-body img { margin-left: auto; margin-right: auto; }
+.page-meta { margin: 0; color: var(--muted); font-size: 0.85em; letter-spacing: 0.1em; }
+
+/* Inline post styles set fixed pixel sizes; keep them inside the column. */
+main .frame, main .iPad, main .iphone-frame, main .timeline, main table {
+    max-width: 100% !important;
+}
+main .frame, main .iPad { overflow: auto; }
+/* Vertical-text frames: scroll container is itself vertical-rl so it opens at the
+   first (rightmost) column instead of the last. */
+main .frame {
+    width: 100% !important;
+    height: min(950px, 82vh) !important;
+    writing-mode: vertical-rl;
+    border-color: var(--heading) !important;
+    outline-color: var(--heading) !important;
+}
+main pre { white-space: pre-wrap; }
+main math { font-size: 1.05em; }
+
+p.tags {
+    margin: 48px 0 0;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.tag {
+    font-family: var(--font-kai);
+    font-size: 0.8em;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 2px 12px;
+}
+
+.navigation-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 36px 0 0;
+}
+.navigation-container a {
+    float: none !important;
+    font-family: var(--font-title);
+    font-size: 0.85em;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    padding: 6px 14px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--surface);
+}
+.navigation-container a:hover { border-color: var(--accent); }
+.navigation-container .nav-next { margin-left: auto; }
+
+/* ---------- Home: calendar + 專欄 ---------- */
+.home-top {
+    display: grid;
+    grid-template-columns: 1fr 210px;
+    gap: 18px;
+    margin-top: 44px;
+    align-items: stretch;
+}
+.home-top .calendar-card { margin: 0; }
+
+.series-box {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 10px 18px 12px;
+    font-family: var(--font-kai);
+    display: flex;
+    flex-direction: column;
+}
+.series-title {
+    text-align: center;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.82em;
+    letter-spacing: 0.5em;
+    padding-left: 0.5em;
+    color: var(--muted);
+}
+.series-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.series-list a {
+    display: block;
+    text-align: center;
+    padding: 8px 0;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    border-bottom: 1px dotted var(--rule-strong);
+}
+.series-list a:last-child { border-bottom: none; }
+
+/* ---------- 閒話 /twix/ ---------- */
+.twix > p:first-child { color: var(--muted) !important; }
+.twix > br { display: none; }
+.twix .container {
+    display: grid;
+    grid-template-columns: 1fr 118px;
+    gap: 0;
+    margin: 0 0 18px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+.twix .content {
+    padding: 18px 22px;
+    font-size: 0.98em;
+    line-height: 1.85;
+    text-align: justify;
+    min-width: 0;
+}
+.twix .content > :last-child { margin-bottom: 0; }
+.twix .content img { display: block; margin: 12px 0; }
+.twix .notes {
+    padding: 18px 14px;
+    border-left: 1px dashed var(--rule-strong);
+    font-family: var(--font-kai);
+    font-size: 0.78em;
+    line-height: 1.6;
+    color: var(--muted);
+    background: var(--sunken);
+}
+.twix .notes p { margin: 0; }
+
+/* ---------- Cards from Bear markup ---------- */
+.custom-box { margin: 0; }
+.movie-card img, .game-card img { background: var(--sunken); }
+.game-rating span { margin-left: 0.3em; opacity: 0.8; }
+
+@media (max-width: 640px) {
+    .home-top { grid-template-columns: 1fr; }
+    .twix .container { grid-template-columns: 1fr; }
+    .twix .notes { border-left: 0; border-top: 1px dashed var(--rule-strong); padding: 8px 22px; }
+    .post-heading { font-size: 1.5em; }
+}
