@@ -489,13 +489,17 @@ ul.blog-posts li a { text-decoration: none; }
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 6px;
-    padding: 16px 18px;
+    position: relative;
+    padding: 16px 36px 16px 18px;   /* right room for the corner numeral */
     text-decoration: none;
     color: var(--heading);
 }
 
 .series-no {
+    position: absolute;              /* top-right corner of the cell */
+    top: 6px;
+    right: 10px;
+    line-height: 1;
     font-family: var(--font-kai);
     font-size: 0.72em;
     letter-spacing: 0.2em;
@@ -796,7 +800,8 @@ p.tags {
 
     /* 專欄 */
     .series-heading { padding: 5px 12px; font-size: 0.7em; min-height: 0; }
-    .series-grid a { padding: 9px 12px; gap: 2px; }
+    .series-grid a { padding: 9px 30px 9px 12px; }
+    .series-no { top: 5px; right: 8px; }
     .series-no { font-size: 0.66em; }
     .series-name { font-size: 0.95em; }  /* = ul.blog-posts li on phones */
 
