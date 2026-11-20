@@ -663,7 +663,9 @@ ul.blog-posts li a { text-decoration: none; }
 }
 
 .post-body > p { text-align: justify; }
-.post-body ins { text-decoration-color: var(--rule-strong); text-underline-offset: 0.25em; }
+/* Names and places are marked with <ins> in the posts; no underline for them.
+   (Links keep their own underline from the <a>.) */
+ins { text-decoration: none; }
 .post-body mark { background: rgba(214, 169, 87, 0.3); color: inherit; padding: 0 0.15em; border-radius: 2px; }
 .post-body h2, .post-body h3 { letter-spacing: 0.08em; }
 .post-body img { margin-left: auto; margin-right: auto; }
@@ -750,15 +752,6 @@ main .iPad { overflow: auto; }
 .post-body .vertical > .frame > h3:first-child,
 .post-body .vertical > .main > h3:first-child { margin-block-start: 0; }
 
-/* 專名號: names marked with <ins> get their line on the left of the characters */
-.post-body .vertical ins {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-decoration-color: var(--muted);
-    text-underline-position: left;
-    text-underline-offset: 0.2em;
-}
-
 /* 朱批: inline annotations (span.note, coloured small spans) in one readable size, cinnabar */
 .post-body .vertical span.note,
 .post-body .vertical span[style*="color"] {
@@ -832,7 +825,6 @@ p.tags {
 .navigation-container .nav-next { margin-left: auto; }
 
 /* ---------- 閒話 /twix/ ---------- */
-.twix > p:first-child { color: var(--muted) !important; }
 .twix > br { display: none; }
 .twix .container {
     display: grid;

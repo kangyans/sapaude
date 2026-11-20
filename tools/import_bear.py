@@ -376,6 +376,8 @@ def build(status, images):
         m = clean(main_of(read(cache_file(p))), fix)
         if p == '/twix/':
             m = twix_datelines(m)
+            # drop the 說明 line about underlining names/places (no longer underlined)
+            m = re.sub(r'<p[^>]*>\s*說明：人名、地名加.*?</p>\s*', '', m, count=1, flags=re.S)
         out(p, name, f'<h2 class="page-title">{name}</h2>\n{m}')
 
     hm = clean(main_of(home_doc), fix)
