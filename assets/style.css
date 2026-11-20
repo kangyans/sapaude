@@ -2,7 +2,7 @@
    Sapere Aude — shared stylesheet
    ===================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Noto+Serif+TC:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Noto+Serif+TC:wght@400;600&display=swap");
 
 /* ---------- Latin text: Times New Roman ----------
    "Latin Times" covers only Latin letters, digits and basic symbols, so every
@@ -52,7 +52,8 @@
     --font-kai: var(--font-latin), "Kaiti TC", "Kaiti SC", "STKaiti", "TW-Kai", "BiauKai", "KaiTi", "Noto Serif TC", serif;
     --font-title: "Latin Times", "Times New Roman", Times, serif;
     --font-num: "Latin Times", "Times New Roman", Times, serif;   /* digits are tabular */
-    --font-masthead: "Marcellus SC", "Latin Times", "Times New Roman", serif;   /* "Sapere Aude" only */
+    /* "Sapere Aude" only: a blackletter nameplate, as on traditional newspapers */
+    --font-masthead: "UnifrakturMaguntia", "Old English Text MT", "Latin Times", "Times New Roman", serif;
     --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
     --bg: #f7f4ec;
@@ -243,9 +244,9 @@ time {
 .site-title h1 {
     margin: 0;
     font-family: var(--font-masthead);
-    font-size: 2.6em;
+    font-size: 3.3em;
     font-weight: 400;
-    letter-spacing: 0.12em;
+    letter-spacing: 0;          /* blackletter is set tight */
     line-height: 1.1;
 }
 
@@ -660,7 +661,7 @@ ul.blog-posts li a { text-decoration: none; }
 @media (max-width: 560px) {
     body { font-size: 16.5px; padding: 0 16px; }
     .site-header { padding-top: 40px; }
-    .site-title h1 { font-size: 2.1em; }
+    .site-title h1 { font-size: 2.7em; }
     .site-nav ul { display: grid; grid-template-columns: repeat(3, 1fr); }
     .site-nav li + li { border-left: 0; }
     .site-nav li:not(:nth-child(3n+1)) { border-left: 1px solid var(--rule-strong); }
@@ -945,7 +946,7 @@ p.tags {
 
     /* masthead */
     .site-header { padding-top: 32px; }
-    .site-title h1 { font-size: 1.75em; letter-spacing: 0.1em; }
+    .site-title h1 { font-size: 2.3em; letter-spacing: 0; }
     .site-tagline { font-size: 0.75em; margin-top: 6px; gap: 10px; }
     .site-tagline::before, .site-tagline::after { width: 28px; }
     .site-nav { margin-top: 18px; }
