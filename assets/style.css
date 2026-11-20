@@ -126,7 +126,7 @@ hr {
     margin: 2.5em 0;
 }
 
-img { max-width: 100%; height: auto; border-radius: var(--radius); }
+img { max-width: 100%; height: auto; border-radius: 2px; }
 
 figure { margin: 2em 0; }
 figcaption {
@@ -156,10 +156,8 @@ pre code { padding: 0; background: none; }
 
 blockquote {
     margin: 1.8em 0;
-    padding: 0.9em 1.3em;
-    background: var(--surface);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 0.2em 0 0.2em 1.3em;
+    border-left: 2px solid var(--accent);
     font-family: var(--font-kai);
     font-size: 1.02em;
     color: var(--heading);
@@ -185,10 +183,15 @@ time {
     color: var(--muted);
 }
 
-/* ---------- Header & nav ---------- */
+/* ---------- Header & nav: newspaper masthead ---------- */
+/* Rule hierarchy for the whole site, like a printed page:
+   masthead section bar = thick + thin ink rule (only place it appears)
+   content blocks       = single ink rule  (var(--heading))
+   inner divisions      = hairline         (var(--rule-strong))
+   footer               = thin + thick ink rule, mirroring the masthead */
 .site-header {
     text-align: center;
-    padding: 56px 0 0;
+    padding: 48px 0 0;
 }
 
 .site-title {
@@ -201,25 +204,36 @@ time {
 .site-title h1 {
     margin: 0;
     font-family: var(--font-title);
-    font-size: 2.3em;
+    font-size: 2.6em;
     font-weight: 400;
     letter-spacing: 0.12em;
     line-height: 1.1;
 }
 
 .site-tagline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
     margin: 10px 0 0;
     font-family: var(--font-kai);
-    font-size: 0.88em;
+    font-size: 0.85em;
     letter-spacing: 0.5em;
-    padding-left: 0.5em; /* balance trailing letter-spacing */
     color: var(--muted);
 }
+.site-tagline::before,
+.site-tagline::after {
+    content: "";
+    width: 40px;
+    height: 1px;
+    background: var(--rule-strong);
+}
+.site-tagline::after { margin-left: -0.5em; } /* offset trailing letter-spacing */
 
 .site-nav {
-    margin: 30px 0 0;
-    border-top: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
+    margin: 24px 0 0;
+    border-top: 3px solid var(--heading);
+    padding-top: 3px;
 }
 
 .site-nav ul {
@@ -227,35 +241,28 @@ time {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+    border-top: 1px solid var(--heading);
+    border-bottom: 1px solid var(--heading);
 }
+
+.site-nav li { flex: 1 1 0; min-width: 0; }
+.site-nav li + li { border-left: 1px solid var(--rule-strong); }
 
 .site-nav a {
     display: block;
-    padding: 11px 18px;
+    padding: 8px 4px;
+    text-align: center;
     font-family: var(--font-kai);
-    font-size: 1.02em;
-    letter-spacing: 0.15em;
-    color: var(--text);
+    font-size: 1em;
+    line-height: 1.6;
+    letter-spacing: 0.2em;
+    text-indent: 0.2em; /* balance trailing letter-spacing */
+    color: var(--heading);
     text-decoration: none;
-    position: relative;
-}
-
-.site-nav a::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -1px;
-    width: 0;
-    height: 2px;
-    background: var(--accent);
-    transition: width 0.25s ease, left 0.25s ease;
+    transition: color 0.2s ease;
 }
 
 .site-nav a:hover { color: var(--accent); }
-.site-nav a:hover::after,
-.site-nav a[aria-current="page"]::after { left: 22%; width: 56%; }
 .site-nav a[aria-current="page"] { color: var(--accent); }
 
 /* ---------- Page heading ---------- */
@@ -268,10 +275,9 @@ time {
 .notice {
     font-size: 0.85em;
     color: var(--muted);
-    padding: 10px 14px;
-    background: var(--surface);
-    border: 1px dashed var(--rule-strong);
-    border-radius: var(--radius);
+    padding: 8px 0;
+    border-top: 1px solid var(--rule-strong);
+    border-bottom: 1px solid var(--rule-strong);
     margin: 18px 0 8px;
     line-height: 1.7;
 }
@@ -296,7 +302,7 @@ time {
     content: "";
     flex: 1;
     height: 1px;
-    background: var(--rule);
+    background: var(--rule-strong);
 }
 
 ul.blog-posts {
@@ -309,13 +315,10 @@ ul.blog-posts li {
     display: flex;
     align-items: baseline;
     gap: 18px;
-    padding: 7px 10px;
-    margin: 0 -10px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+    padding: 6px 0;
 }
 
-ul.blog-posts li:hover { background: var(--accent-soft); }
+ul.blog-posts li:hover time { color: var(--accent); }
 
 ul.blog-posts li > span:first-child,
 ul.blog-posts li time {
@@ -340,24 +343,22 @@ ul.blog-posts li a { text-decoration: none; }
 }
 
 /* ---------- Home: 今日 panel (專欄 + calendar), newspaper style ---------- */
-/* Printed on the page itself: no card, no shadow, no fill. Structure comes
-   only from rules — a thick-and-thin masthead rule on top, a column rule
-   between 專欄 and the calendar, hairlines inside, a single rule below. */
+/* Printed on the page itself: no card, no shadow, no fill. A single ink
+   rule above and below, an ink column rule between 專欄 and the calendar,
+   hairlines inside (see the rule hierarchy in the header section). */
 .home-top {
     display: grid;
     grid-template-columns: 1fr 270px;   /* 專欄 left, calendar right */
-    margin: 44px 0 0;
+    margin: 32px 0 0;
     background: transparent;
-    border-top: 3px solid var(--heading);
-    border-bottom: 1px solid var(--heading);
-    padding-top: 3px;                   /* gap between the thick and thin rule */
-}
-
-/* thin half of the masthead rule, plus each column's section head */
-.series-heading,
-.calendar-top {
     border-top: 1px solid var(--heading);
     border-bottom: 1px solid var(--heading);
+}
+
+/* each column's section head, ruled off from its content */
+.series-heading,
+.calendar-top {
+    border-bottom: 1px solid var(--rule-strong);
     line-height: 1.6;    /* same height on both sides so the rules line up */
     min-height: calc(1.6em + 14px);
 }
@@ -523,7 +524,6 @@ ul.blog-posts li a { text-decoration: none; }
     .calendar-content { justify-content: center; gap: 28px; }
     .calendar-left { flex: 0 0 auto; }
     .calendar-bottom { border-bottom: 1px solid var(--heading); }
-    .series-heading { border-top: 0; }
     .series-grid a { padding: 12px 14px; }
 }
 
@@ -549,8 +549,8 @@ ul.blog-posts li a { text-decoration: none; }
 .cover {
     width: 100%;
     display: block;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px var(--rule);
     transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
 }
 
@@ -597,15 +597,15 @@ ul.blog-posts li a { text-decoration: none; }
 /* ---------- Footer ---------- */
 .site-footer {
     margin-top: 80px;
-    padding: 28px 0 40px;
-    border-top: 1px solid var(--rule);
+    padding: 3px 0 40px;
+    border-top: 1px solid var(--heading);
     text-align: center;
     font-family: var(--font-title);
     font-size: 0.82em;
     letter-spacing: 0.2em;
     color: var(--muted);
 }
-.site-footer p { margin: 0; }
+.site-footer p { margin: 0; padding-top: 22px; border-top: 3px solid var(--heading); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 800px) {
@@ -615,8 +615,12 @@ ul.blog-posts li a { text-decoration: none; }
 @media (max-width: 560px) {
     body { font-size: 16.5px; padding: 0 16px; }
     .site-header { padding-top: 40px; }
-    .site-title h1 { font-size: 1.9em; }
-    .site-nav a { padding: 9px 11px; letter-spacing: 0.08em; }
+    .site-title h1 { font-size: 2.1em; }
+    .site-nav ul { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .site-nav li + li { border-left: 0; }
+    .site-nav li:not(:nth-child(3n+1)) { border-left: 1px solid var(--rule-strong); }
+    .site-nav li:nth-child(n+4) { border-top: 1px solid var(--rule-strong); }
+    .site-nav a { padding: 7px 2px; letter-spacing: 0.12em; text-indent: 0.12em; }
     .page-title { margin-top: 36px; }
 
     .game-grid, .movie-grid { grid-template-columns: repeat(2, 1fr); gap: 22px 12px; }
@@ -680,21 +684,17 @@ main math { font-size: 1.05em; }
 
 p.tags {
     margin: 48px 0 0;
-    padding-top: 18px;
-    border-top: 1px solid var(--rule);
+    padding-top: 12px;
+    border-top: 1px solid var(--heading);
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 4px 18px;
 }
 .tag {
     font-family: var(--font-kai);
     font-size: 0.8em;
     letter-spacing: 0.08em;
     color: var(--muted);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    padding: 2px 12px;
 }
 
 .navigation-container {
@@ -702,6 +702,8 @@ p.tags {
     justify-content: space-between;
     gap: 12px;
     margin: 36px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule-strong);
 }
 .navigation-container a {
     float: none !important;
@@ -709,12 +711,7 @@ p.tags {
     font-size: 0.85em;
     letter-spacing: 0.1em;
     text-decoration: none;
-    padding: 6px 14px;
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    background: var(--surface);
 }
-.navigation-container a:hover { border-color: var(--accent); }
 .navigation-container .nav-next { margin-left: auto; }
 
 /* ---------- 閒話 /twix/ ---------- */
@@ -724,15 +721,13 @@ p.tags {
     display: grid;
     grid-template-columns: 1fr 118px;
     gap: 0;
-    margin: 0 0 18px;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: 8px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
+    margin: 0;
+    border-top: 1px solid var(--rule-strong);
 }
+.twix .container:first-of-type { border-top: 1px solid var(--heading); }
+.twix .container:last-of-type { border-bottom: 1px solid var(--heading); }
 .twix .content {
-    padding: 18px 22px;
+    padding: 16px 20px 16px 0;
     font-size: 0.98em;
     line-height: 1.85;
     text-align: justify;
@@ -741,13 +736,12 @@ p.tags {
 .twix .content > :last-child { margin-bottom: 0; }
 .twix .content img { display: block; margin: 12px 0; }
 .twix .notes {
-    padding: 18px 14px;
-    border-left: 1px dashed var(--rule-strong);
+    padding: 18px 0 16px 14px;
+    border-left: 1px solid var(--rule-strong);
     font-family: var(--font-kai);
     font-size: 0.78em;
     line-height: 1.6;
     color: var(--muted);
-    background: var(--sunken);
 }
 .twix .notes p { margin: 0; }
 
@@ -757,8 +751,8 @@ p.tags {
 .game-rating span { margin-left: 0.3em; opacity: 0.8; }
 
 @media (max-width: 640px) {
-    .home-top { grid-template-columns: 1fr; }
     .twix .container { grid-template-columns: 1fr; }
-    .twix .notes { border-left: 0; border-top: 1px dashed var(--rule-strong); padding: 8px 22px; }
+    .twix .content { padding: 14px 0 4px; }
+    .twix .notes { border-left: 0; padding: 0 0 12px; }
     .post-heading { font-size: 1.5em; }
 }
