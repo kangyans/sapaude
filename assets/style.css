@@ -1033,12 +1033,38 @@ p.tags {
     scroll-padding: 0;
     /* overflow-x also clips vertically, so leave room for the hover lift
        and its shadow, then pull the space back with negative margins */
-    padding: 14px 0 36px;
-    margin: -10px 0 -30px;
+    padding: 26px 0 40px;
+    margin: -22px 0 -34px;
     scrollbar-width: none;
 }
 .row-track::-webkit-scrollbar { display: none; }
-.row-track > .movie-card { scroll-snap-align: start; }
+.row-track.is-gliding { scroll-snap-type: none; }   /* rows.js animates; snap would fight it */
+
+/* Hover: the whole card (poster + caption) magnifies smoothly. A short delay
+   keeps cards from flickering as the pointer passes over a row. Cards at the
+   visible edges grow inward (rows.js marks them) so the track doesn't clip them. */
+.row-track > .movie-card {
+    scroll-snap-align: start;
+    position: relative;
+    transform-origin: center center;
+    transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform;
+}
+.row-track > .movie-card.edge-start { transform-origin: left center; }
+.row-track > .movie-card.edge-end   { transform-origin: right center; }
+.row-track > .movie-card img {
+    transition: box-shadow 0.38s ease;
+}
+.row-track > .movie-card:hover {
+    z-index: 2;
+    transform: scale(1.14);
+    transition-delay: 0.1s;
+}
+.row-track > .movie-card:hover img {
+    transform: none;                        /* the card scales, not just the image */
+    box-shadow: var(--shadow-lift);
+    transition-delay: 0.1s;
+}
 
 /* fade the edge that has more to see */
 .row-viewport::after {
@@ -1064,7 +1090,7 @@ p.tags {
     top: 14px;
     bottom: 94px;                          /* poster area only: track padding + captions */
     width: 34px;
-    z-index: 2;
+    z-index: 3;                            /* above a magnified card */
     display: flex;
     align-items: center;
     justify-content: center;
