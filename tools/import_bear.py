@@ -3,14 +3,14 @@
 
 Downloads the Bear pages (home, 博文, 閒話, 資料庫, 影冊, 遊戲, every post and
 every internal page they link to), then rewrites them into the site's own
-layout under the repo root, keeping Bear's URLs.
+layout under site/, keeping Bear's URLs.
 
 Usage (from anywhere):
     python3 tools/import_bear.py            # fetch fresh copies, then build
     python3 tools/import_bear.py --offline  # rebuild from the cached download
 
 Downloads are cached in .bear-cache/ (git-ignored). Only the standard library
-is used. Images in the pages are downloaded once into assets/images/ (named by
+is used. Images in the pages are downloaded once into site/assets/images/ (named by
 a hash of their URL, so re-runs skip them) and the pages point at the local
 copies; with --offline, images not yet downloaded keep their remote URL.
 The 聯繫 link is taken from the nav of the downloaded Bear home page.
@@ -30,8 +30,9 @@ from collections import OrderedDict
 
 BASE = 'https://kangyan.bearblog.dev'
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SITE = os.path.join(REPO, 'site')          # what Cloudflare Pages serves (build output directory)
 CACHE = os.path.join(REPO, '.bear-cache')
-IMAGES = os.path.join(REPO, 'assets', 'images')
+IMAGES = os.path.join(SITE, 'assets', 'images')
 UA = 'Mozilla/5.0 (static-site importer)'  # Bear pages
 IMG_UA = 'sapaude-site-importer/1.0 (python-urllib)'  # image hosts; Wikimedia rejects browser-like UAs
 
@@ -292,7 +293,7 @@ def page(nav_items, path, title, body, script=''):
 
 
 def write(path, doc):
-    out = os.path.join(REPO, path.strip('/'), 'index.html')
+    out = os.path.join(SITE, path.strip('/'), 'index.html')
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, 'w', encoding='utf-8') as f:
         f.write(doc)
