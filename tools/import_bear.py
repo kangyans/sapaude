@@ -237,7 +237,7 @@ def post_body(m):
         return None, m
     title, dt = hm.group(1).strip(), hm.group(2)
     head = (f'<header class="post-header">\n<h1 class="post-heading">{title}</h1>\n'
-            f'<time datetime="{dt}">{dt[:10]}</time>\n</header>')
+            f'<time datetime="{dt}">{dt[:10].replace("-", "/")}</time>\n</header>')
     return title, head + '\n<div class="post-body">\n' + m[hm.end():].strip() + '\n</div>'
 
 
@@ -285,7 +285,7 @@ def archive(groups):
     for y, items in groups.items():
         out.append(f'<h3 class="year">{y}</h3>\n<ul class="blog-posts">')
         for d, href, name in items:
-            out.append(f'<li><time>{d}</time><a class="post-title" href="{href}">{name}</a></li>')
+            out.append(f'<li><time>{d.replace("-", "/")}</time><a class="post-title" href="{href}">{name}</a></li>')
         out.append('</ul>')
     out.append('</section>')
     return '\n'.join(out)
