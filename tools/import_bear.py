@@ -394,6 +394,74 @@ def directory(m):
     return m
 
 
+def roman(n):
+    out = ''
+    for v, r in ((1000, 'M'), (900, 'CM'), (500, 'D'), (400, 'CD'), (100, 'C'), (90, 'XC'),
+                 (50, 'L'), (40, 'XL'), (10, 'X'), (9, 'IX'), (5, 'V'), (4, 'IV'), (1, 'I')):
+        while n >= v:
+            out += r
+            n -= v
+    return out
+
+
+def enchiridion_book(m):
+    """The Enchiridion: the Bear post is the MIT Classics text pasted inside a
+    <pre>. Rebuild it as a book: title page, contents, 52 numbered chapters,
+    colophon. assets/book.js adds the reading bar, progress and resume."""
+    items = re.findall(r'<li>(.*?)</li>', m, re.S)
+    if not items:
+        return None
+
+    def tidy(x):
+        x = re.sub(r'\s+', ' ', x).strip()
+        return x.replace(' 0 ', ' O ').replace('"0 ', '"O ')   # source typed "0" for the vocative "O"
+
+    chapters = []
+    for i, body in enumerate(items, 1):
+        paras = [tidy(p) for p in re.findall(r'<p>(.*?)</p>', body, re.S)] or [tidy(body)]
+        first = re.sub(r'<[^>]+>', '', paras[0])
+        words = first.split()
+        incipit = ' '.join(words[:7]) + ('…' if len(words) > 7 else '')
+        chapters.append((i, paras, html.escape(incipit, quote=False)))
+
+    n = len(chapters)
+    toc = '\n'.join(f'<li><a href="#ch-{i}"><span class="toc-no">{roman(i)}</span>'
+                    f'<span class="toc-incipit">{inc}</span></a></li>' for i, _, inc in chapters)
+    body = []
+    for i, paras, _ in chapters:
+        ps = '\n'.join(f'<p>{p}</p>' for p in paras)
+        body.append(f'<section class="chapter" id="ch-{i}" data-no="{roman(i)}">\n'
+                    f'<h2 class="chapter-no"><span class="visually-hidden">Chapter </span>{roman(i)}</h2>\n{ps}\n</section>')
+    colo = re.search(r'Copyright statement:(.*?)</pre>', m, re.S)
+    colophon = tidy(colo.group(1)) if colo else ''
+    return f'''<article class="book" lang="en" data-chapters="{n}">
+<header class="book-title">
+<p class="book-kicker">開源閱讀</p>
+<h1 class="book-name">The Enchiridion</h1>
+<p class="book-author">Epictetus</p>
+<p class="book-translator">Translated by Elizabeth Carter</p>
+</header>
+
+<nav class="book-toc" id="contents" aria-label="Contents">
+<h2 class="book-toc-title">Contents</h2>
+<p class="book-resume" hidden></p>
+<ol class="toc-list">
+{toc}
+</ol>
+</nav>
+
+<div class="book-text">
+{chr(10).join(body)}
+<p class="book-end">The End</p>
+</div>
+
+<footer class="book-colophon">
+<p>Text: <a href="http://classics.mit.edu/Epictetus/epicench.html">The Internet Classics Archive</a>.
+{colophon}</p>
+</footer>
+</article>'''
+
+
 def twix_datelines(m):
     """閒話: normalise each note's '公佈於 MM/DD/YYYY' to '公佈於 YYYY/MM/DD'."""
     def rep(x):
@@ -422,6 +490,11 @@ def build(status, images):
         # vertical-text posts get the band-fitting script (see assets/vertical.js)
         has_vertical = re.search(r'class=["\']?[^"\'>]*\bvertical\b', body)  # quoted or bare class=vertical
         vscript = '<script src="/assets/vertical.js" defer></script>\n' if has_vertical else ''
+        if p == '/the-enchiridion/':
+            book = enchiridion_book(m)
+            if book:
+                out(p, 'The Enchiridion', book, '<script src="/assets/book.js" defer></script>\n')
+                continue
         if p == '/archive/twix/2025/':          # same note style as /twix/
             body = twix_datelines(body)
         out(p, re.sub('<[^>]+>', '', title), body, vscript)

@@ -1223,3 +1223,222 @@ p.tags {
     .dir-group, .dir-group:nth-child(even) { padding: 2px 0 14px; border-right: 0; }
     .dir-group:nth-child(2) { border-top: 1px solid var(--rule-strong); }
 }
+
+/* =====================================================
+   Book reader — The Enchiridion (/the-enchiridion/)
+   A narrow, justified book column in Times New Roman with
+   book-style indents, a title page and contents between
+   ink rules, drop caps, and a slim reading bar (book.js).
+   ===================================================== */
+.book {
+    --measure: 34em;
+    font-family: var(--font-num);           /* Times New Roman stack */
+    color: var(--text);
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* title page */
+.book-title {
+    margin: 52px 0 0;
+    padding: 46px 0 40px;
+    text-align: center;
+    border-top: 3px solid var(--heading);
+    border-bottom: 1px solid var(--heading);
+}
+.book-kicker {
+    margin: 0 0 18px;
+    font-family: var(--font-kai);
+    font-size: 0.8em;
+    letter-spacing: 0.5em;
+    color: var(--muted);
+}
+.book-name {
+    margin: 0;
+    font-family: var(--font-num);
+    font-size: 2.6em;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    color: var(--heading);
+}
+.book-author {
+    margin: 14px 0 0;
+    font-size: 1.05em;
+    font-variant: small-caps;
+    letter-spacing: 0.2em;
+    color: var(--heading);
+}
+.book-translator { margin: 6px 0 0; font-style: italic; color: var(--muted); }
+
+/* contents */
+.book-toc { margin: 40px auto 0; max-width: var(--measure); }
+.book-toc-title {
+    margin: 0 0 6px;
+    text-align: center;
+    font-family: var(--font-num);
+    font-size: 0.85em;
+    font-weight: 400;
+    font-variant: small-caps;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+}
+.book-resume {
+    margin: 0 0 10px;
+    text-align: center;
+    font-family: var(--font-kai);
+    font-size: 0.9em;
+    color: var(--muted);
+}
+.book-resume a { color: var(--accent); text-decoration: none; }
+.toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    columns: 2;
+    column-gap: 2em;
+    column-rule: 1px solid var(--rule-strong);
+    border-top: 1px solid var(--rule-strong);
+    border-bottom: 1px solid var(--rule-strong);
+    padding: 10px 0;
+}
+.toc-list li { break-inside: avoid; }
+.toc-list a {
+    display: flex;
+    gap: 10px;
+    padding: 3px 0;
+    font-size: 0.88em;
+    line-height: 1.45;
+    color: var(--text);
+    text-decoration: none;
+}
+.toc-no {
+    flex: 0 0 3.2em;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+}
+.toc-incipit { min-width: 0; font-style: italic; color: var(--muted); }
+.toc-list a:hover .toc-incipit { color: var(--heading); }
+
+/* text */
+.book-text {
+    max-width: var(--measure);
+    margin: 0 auto;
+    font-size: 1.12em;
+    line-height: 1.72;
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    font-variant-numeric: oldstyle-nums;
+    font-kerning: normal;
+}
+
+.chapter { scroll-margin-top: 56px; }
+.chapter-no {
+    margin: 2.6em 0 0.9em;
+    text-align: center;
+    font-family: var(--font-num);
+    font-size: 1em;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+}
+/* ornament between chapters */
+.chapter + .chapter .chapter-no::before {
+    content: "❦";
+    display: block;
+    margin: 0 0 1.6em;
+    font-size: 0.9em;
+    letter-spacing: 0;
+    color: var(--muted);
+}
+
+.book-text p { margin: 0; text-indent: 1.5em; }
+.chapter-no + p { text-indent: 0; }
+.chapter-no + p::first-letter {
+    float: left;
+    margin: 0.06em 0.08em 0 0;
+    font-size: 3.1em;
+    line-height: 0.82;
+    color: var(--accent);
+}
+
+.book-end {
+    margin: 3em 0 0 !important;
+    text-align: center;
+    text-indent: 0 !important;
+    font-variant: small-caps;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+}
+
+.book-colophon {
+    max-width: var(--measure);
+    margin: 3em auto 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule-strong);
+    font-size: 0.72em;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+/* reading bar */
+.book-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 20;
+    background: var(--bg);
+    border-bottom: 1px solid var(--heading);
+    transform: translateY(-100%);
+    transition: transform 0.25s ease;
+}
+.book-bar.is-shown { transform: none; }
+.book-bar-inner {
+    max-width: var(--width);
+    margin: 0 auto;
+    padding: 7px 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-family: var(--font-num);
+    font-size: 0.85em;
+}
+.book-bar-toc {
+    font-variant: small-caps;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+}
+.book-bar-title { flex: 1; text-align: center; font-style: italic; color: var(--muted); }
+.book-bar-no {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    min-width: 6em;
+    text-align: right;
+}
+.book-bar-progress { height: 2px; background: var(--rule); }
+.book-bar-progress span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+}
+
+@media (max-width: 560px) {
+    .book-title { margin-top: 32px; padding: 32px 0 28px; }
+    .book-name { font-size: 2em; }
+    .toc-list { columns: 1; }
+    .book-text { font-size: 1.05em; line-height: 1.7; }
+    .book-bar-inner { padding: 6px 16px; }
+    .book-bar-title { display: none; }
+    .book-bar-no { flex: 1; }
+}
