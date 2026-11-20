@@ -1043,24 +1043,28 @@ p.tags {
 /* Hover: the whole card (poster + caption) magnifies smoothly. A short delay
    keeps cards from flickering as the pointer passes over a row. Cards at the
    visible edges grow inward (rows.js marks them) so the track doesn't clip them. */
-.row-track > .movie-card {
+.row-track > .movie-card,
+.row-track > .game-card {
     scroll-snap-align: start;
     position: relative;
     transform-origin: center center;
     transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1);
     will-change: transform;
 }
-.row-track > .movie-card.edge-start { transform-origin: left center; }
-.row-track > .movie-card.edge-end   { transform-origin: right center; }
-.row-track > .movie-card img {
+.row-track > .edge-start { transform-origin: left center; }
+.row-track > .edge-end   { transform-origin: right center; }
+.row-track > .movie-card img,
+.row-track > .game-card img {
     transition: box-shadow 0.38s ease;
 }
-.row-track > .movie-card:hover {
+.row-track > .movie-card:hover,
+.row-track > .game-card:hover {
     z-index: 2;
     transform: scale(1.14);
     transition-delay: 0.1s;
 }
-.row-track > .movie-card:hover img {
+.row-track > .movie-card:hover img,
+.row-track > .game-card:hover img {
     transform: none;                        /* the card scales, not just the image */
     box-shadow: var(--shadow-lift);
     transition-delay: 0.1s;
@@ -1079,7 +1083,8 @@ p.tags {
 .row-viewport.at-end::after { opacity: 0; }
 
 .movie-card img { aspect-ratio: 2 / 3; }
-.row-track .movie-title {
+.row-track .movie-title,
+.row-track .game-title {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1115,11 +1120,15 @@ p.tags {
 @media (hover: none) {
     .row-btn { display: none; }           /* touch: swipe instead */
 }
-@media (max-width: 800px) { .row-track { --per-view: 4.3; } }
+/* 遊戲 rows: landscape 3:2 covers, so fewer per view */
+.row-games .row-track { --per-view: 3.3; }
+.row-games .row-btn { bottom: 90px; }
+@media (max-width: 800px) { .row-track { --per-view: 4.3; } .row-games .row-track { --per-view: 2.6; } }
 @media (max-width: 560px) {
     .row { margin-top: 26px; }
     .row-title { font-size: 1em; }
     .row-track { --per-view: 2.6; gap: 10px; grid-auto-columns: calc((100% - 1.6 * 10px) / 2.6); }
+    .row-games .row-track { grid-auto-columns: calc((100% - 0.7 * 10px) / 1.7); }
 }
 
 /* =====================================================

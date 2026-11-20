@@ -367,6 +367,22 @@ def movie_rows(m):
     return '\n'.join(out)
 
 
+def game_rows(m):
+    """遊戲: each Bear section (<h3> + game-grid) becomes a row, like 影冊."""
+    def rep(x):
+        head_id, head, cards = x.group(1), x.group(2).strip(), x.group(3)
+        n = cards.count('class="game-card"')
+        return (f'<section class="row row-games" id="{head_id}">\n'
+                f'<h3 class="row-title">{head}<span class="row-count">{n}</span></h3>\n'
+                '<div class="row-viewport">\n<div class="row-track">\n' + cards.strip()
+                + '\n</div>\n</div>\n</section>\n')
+    pat = r'<h3 id=["\']?([^"\' >]+)["\']?>(.*?)</h3>\s*<div class="game-grid">(.*?)</div>\s*(?=<hr>|</div>\s*$)'
+    m = re.sub(pat, rep, m, flags=re.S)
+    m = re.sub(r'\s*<hr>\s*', '\n', m)
+    m = m.replace('<img ', '<img loading="lazy" ')
+    return m
+
+
 def directory(m):
     """資料庫: group each <h4> + <ul> into a directory block, and runs of blocks
     into a two-column grid, like a newspaper's listings page."""
@@ -422,13 +438,15 @@ def build(status, images):
         m = clean(main_of(read(cache_file(p))), fix)
         if p == '/movies/':
             m = movie_rows(m)
+        if p == '/games/':
+            m = game_rows(m)
         if p == '/arxiv/':
             m = directory(m)
         if p == '/twix/':
             m = twix_datelines(m)
             # drop the 說明 line about underlining names/places (no longer underlined)
             m = re.sub(r'<p[^>]*>\s*說明：人名、地名加.*?</p>\s*', '', m, count=1, flags=re.S)
-        script = '<script src="/assets/rows.js" defer></script>\n' if p == '/movies/' else ''
+        script = '<script src="/assets/rows.js" defer></script>\n' if p in ('/movies/', '/games/') else ''
         out(p, name, f'<h2 class="page-title">{name}</h2>\n{m}', script)
 
     hm = clean(main_of(home_doc), fix)
