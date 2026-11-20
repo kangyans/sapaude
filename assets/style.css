@@ -863,7 +863,7 @@ p.tags {
     line-height: 1.15;
     color: var(--muted);
 }
-.twix-date .md { font-size: 1.75em; letter-spacing: 0.02em; color: var(--heading); }
+.twix-date .md { font-size: 1.2em; letter-spacing: 0.04em; color: var(--heading); }  /* ≈ the post-list dates */
 
 /* side notes: marginalia under the dateline, ruled off by a hairline */
 .twix .notes p:not(.twix-date) {
@@ -890,7 +890,7 @@ p.tags {
     .twix .container { grid-template-columns: 1fr; }
     .twix .content { padding: 20px 0 10px; }
     .twix .notes { border-left: 0; padding: 10px 0 22px; }
-    .twix-date .md { font-size: 1.3em; }
+    .twix-date .md { font-size: 1.15em; }
     .twix-date:not(:last-child) { padding-bottom: 8px; margin-bottom: 8px; }
     .post-heading { font-size: 1.5em; }
 }
