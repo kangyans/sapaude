@@ -756,3 +756,62 @@ p.tags {
     .twix .notes { border-left: 0; padding: 0 0 12px; }
     .post-heading { font-size: 1.5em; }
 }
+
+/* =====================================================
+   Phone type scale — kept last so it wins over the
+   section-level mobile rules above.
+   ===================================================== */
+@media (max-width: 560px) {
+    body { font-size: 16px; line-height: 1.8; }
+
+    /* masthead */
+    .site-header { padding-top: 32px; }
+    .site-title h1 { font-size: 1.75em; letter-spacing: 0.1em; }
+    .site-tagline { font-size: 0.75em; margin-top: 6px; gap: 10px; }
+    .site-tagline::before, .site-tagline::after { width: 28px; }
+    .site-nav { margin-top: 18px; }
+    .site-nav a { font-size: 0.9em; padding: 6px 2px; }
+
+    /* headings */
+    h2 { font-size: 1.35em; }
+    h3 { font-size: 1.12em; }
+    h4 { font-size: 1em; }
+    .page-title { font-size: 1.4em; margin: 30px 0 6px; letter-spacing: 0.15em; }
+    .post-header { margin: 34px 0 24px; }
+    .post-heading { font-size: 1.32em; letter-spacing: 0.08em; }
+    .post-header time { font-size: 0.85em; }
+    blockquote { font-size: 0.95em; padding-left: 1em; }
+
+    /* calendar: a compact strip instead of a tall block */
+    .home-top { margin-top: 22px; }
+    .calendar-top, .calendar-bottom { padding: 5px 12px; font-size: 0.7em; letter-spacing: 0.12em; min-height: 0; }
+    .calendar-content { padding: 10px 14px; gap: 22px; }
+    .calendar-month { font-size: 0.78em; letter-spacing: 0.2em; padding-left: 0.2em; }
+    .calendar-day { font-size: 2.6em; margin: 2px 0; }
+    .calendar-week { font-size: 0.72em; letter-spacing: 0.15em; padding-left: 0.15em; }
+    .calendar-right { padding-left: 14px; gap: 6px; }
+    .calendar-lunar { font-size: 0.82em; letter-spacing: 0.12em; }
+    .calendar-lunar + .calendar-lunar { margin-top: 1em; }
+    .seal { width: 1.6em; height: 1.6em; font-size: 0.9em; }
+
+    /* 專欄 */
+    .series-heading { padding: 5px 12px; font-size: 0.7em; min-height: 0; }
+    .series-grid a { padding: 9px 12px; gap: 2px; }
+    .series-no { font-size: 0.66em; }
+    .series-name { font-size: 0.92em; }
+
+    /* lists */
+    .archive { margin-top: 24px; }
+    .year { font-size: 1em; margin: 28px 0 6px; }
+    ul.blog-posts li { gap: 12px; padding: 5px 0; font-size: 0.95em; line-height: 1.6; }
+    ul.blog-posts li time { font-size: 0.92em; flex-basis: 3.1em; }
+
+    /* 閒話, tags, prev/next, footer */
+    .twix .content { font-size: 0.94em; }
+    .twix .notes { font-size: 0.72em; }
+    .tag { font-size: 0.75em; }
+    .navigation-container a { font-size: 0.78em; }
+    .game-title, .movie-title { font-size: 0.82rem; }
+    .game-rating, .movie-rating { font-size: 0.76rem; }
+    .site-footer { margin-top: 56px; font-size: 0.72em; }
+}
