@@ -996,3 +996,173 @@ p.tags {
     .game-rating, .movie-rating { font-size: 0.76rem; }
     .site-footer { margin-top: 56px; font-size: 0.72em; }
 }
+
+/* =====================================================
+   影冊 — Netflix-style rows
+   ===================================================== */
+.row { margin: 34px 0 0; }
+.row-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 0 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--heading);
+    font-size: 1.12em;
+    letter-spacing: 0.15em;
+}
+.row-count {
+    font-family: var(--font-num);
+    font-size: 0.72em;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+}
+
+.row-viewport { position: relative; }
+
+.row-track {
+    --per-view: 5.4;                       /* cards visible; the fraction peeks the next one */
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - (var(--per-view) - 1) * 14px) / var(--per-view));
+    gap: 14px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0;
+    padding: 8px 0 6px;                    /* room for the hover lift */
+    scrollbar-width: none;
+}
+.row-track::-webkit-scrollbar { display: none; }
+.row-track > .movie-card { scroll-snap-align: start; }
+
+/* fade the edge that has more to see */
+.row-viewport::after {
+    content: "";
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 36px;
+    pointer-events: none;
+    background: linear-gradient(to right, transparent, var(--bg));
+    transition: opacity 0.2s ease;
+}
+.row-viewport.at-end::after { opacity: 0; }
+
+.movie-card img { aspect-ratio: 2 / 3; }
+.row-track .movie-card:hover img { transform: translateY(-4px) scale(1.04); }
+.row-track .movie-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.row-btn {
+    position: absolute;
+    top: 8px;
+    height: calc(100% - 64px);            /* the poster area, not the captions */
+    width: 34px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--heading);
+    background: var(--bg);
+    color: var(--heading);
+    font-family: var(--font-latin), serif;
+    font-size: 1.6em;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.row-btn[hidden] { display: none; }
+.row-btn-prev { left: -1px; }
+.row-btn-next { right: -1px; }
+.row-viewport:hover .row-btn,
+.row-btn:focus-visible { opacity: 0.94; }
+.row-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+@media (hover: none) {
+    .row-btn { display: none; }           /* touch: swipe instead */
+}
+@media (max-width: 800px) { .row-track { --per-view: 4.3; } }
+@media (max-width: 560px) {
+    .row { margin-top: 26px; }
+    .row-title { font-size: 1em; }
+    .row-track { --per-view: 2.6; gap: 10px; grid-auto-columns: calc((100% - 1.6 * 10px) / 2.6); }
+}
+
+/* =====================================================
+   遊戲 — 3:2 covers
+   ===================================================== */
+.game-grid { grid-template-columns: repeat(3, 1fr); gap: 26px 18px; }
+.game-card img, .game-card .cover { aspect-ratio: 3 / 2; object-fit: cover; }
+@media (max-width: 560px) { .game-grid { grid-template-columns: repeat(2, 1fr); gap: 20px 12px; } }
+
+/* =====================================================
+   資料庫 — newspaper listings page
+   ===================================================== */
+.directory h3 {
+    margin: 40px 0 14px;
+    padding-top: 8px;
+    border-top: 1px solid var(--heading);
+    font-size: 1.15em;
+    letter-spacing: 0.25em;
+}
+.directory > h3:first-child { margin-top: 28px; }
+.directory > p { margin: 0; }
+
+.dir-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 0;
+    border-bottom: 1px solid var(--rule-strong);
+}
+.dir-group {
+    padding: 4px 22px 18px 0;
+    border-top: 1px solid var(--rule-strong);
+}
+.dir-group:nth-child(odd) { border-right: 1px solid var(--rule-strong); }
+.dir-group:nth-child(even) { padding-left: 22px; padding-right: 0; }
+.dir-group:nth-child(-n+2) { border-top: 0; }
+
+.directory h4 {
+    margin: 12px 0 8px;
+    font-size: 0.82em;
+    font-weight: 400;
+    letter-spacing: 0.4em;
+    color: var(--accent);
+}
+
+.directory ul { list-style: none; margin: 0; padding: 0; }
+.directory li {
+    margin: 0 0 9px;
+    font-size: 0.86em;
+    line-height: 1.6;
+    color: var(--muted);
+}
+.directory li > a:first-child {
+    font-size: 1.1em;
+    color: var(--heading);
+    text-decoration: none;
+}
+.directory li > a:first-child em { font-style: normal; }
+.directory li > a:first-child:hover { color: var(--accent); }
+.directory li code { font-size: 0.85em; word-break: break-all; }
+
+.colophon {
+    margin-top: 48px;
+    font-size: 0.85em;
+    line-height: 1.8;
+    color: var(--muted);
+}
+.colophon h3 { font-size: 1.05em; }
+.colophon p { margin: 0 0 0.8em; }
+
+@media (max-width: 560px) {
+    .dir-grid { grid-template-columns: 1fr; }
+    .dir-group, .dir-group:nth-child(even) { padding: 2px 0 14px; border-right: 0; }
+    .dir-group:nth-child(2) { border-top: 1px solid var(--rule-strong); }
+}
