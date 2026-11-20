@@ -713,6 +713,9 @@ main .iPad { overflow: auto; }
     color: var(--text);
 }
 
+/* hand-drawn 1px divider between text and footnotes (人間詞話): hairline colour */
+.post-body .vertical > div[style*="width: 1px"] { background: var(--rule-strong) !important; }
+
 .post-body .vertical .main,
 .post-body .vertical .context { line-height: inherit; }
 

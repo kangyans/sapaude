@@ -332,7 +332,8 @@ def build(status, images):
             title = title_of(doc)
             body = f'<h2 class="page-title">{title}</h2>\n<div class="post-body">\n{m}\n</div>'
         # vertical-text posts get the band-fitting script (see assets/vertical.js)
-        vscript = '<script src="/assets/vertical.js" defer></script>\n' if 'class="vertical"' in body else ''
+        has_vertical = re.search(r'class=["\']?[^"\'>]*\bvertical\b', body)  # quoted or bare class=vertical
+        vscript = '<script src="/assets/vertical.js" defer></script>\n' if has_vertical else ''
         out(p, re.sub('<[^>]+>', '', title), body, vscript)
 
     groups = OrderedDict()
