@@ -1532,3 +1532,53 @@ p.tags {
     .book-zh .book-name { font-size: 1.9em; letter-spacing: 0.2em; text-indent: 0.2em; }
     .book-running { margin-top: 28px; }
 }
+
+/* =====================================================
+   遊戲 — comfortable rows
+   Larger covers (fewer per view), titles that wrap to two
+   lines instead of being cut off, a clearer score, softer
+   corners, and more room between sections.
+   ===================================================== */
+.row-games { margin-top: 42px; }
+.row-games .row-track {
+    --per-view: 3;
+    gap: 20px;
+    grid-auto-columns: calc((100% - (var(--per-view) - 1) * 20px) / var(--per-view));
+}
+.row-games .game-card img {
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px var(--rule);
+}
+.row-games .row-track .game-title {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    min-height: 2.8em;                     /* two lines, so every card lines up */
+    margin-top: 10px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+}
+.row-games .game-rating {
+    margin-top: 2px;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--rating);
+    opacity: 0.85;
+}
+.row-games .game-rating span {
+    margin-left: 0.5em;
+    font-family: var(--font-num);
+    font-size: 1.15em;
+    letter-spacing: 0.02em;
+    color: var(--heading);
+    opacity: 1;
+}
+.row-games .row-btn { bottom: 112px; }     /* the cover only, above the two-line captions */
+
+@media (max-width: 800px) { .row-games .row-track { --per-view: 2.4; } }
+@media (max-width: 560px) {
+    .row-games { margin-top: 30px; }
+    .row-games .row-track { --per-view: 1.6; gap: 14px; grid-auto-columns: calc((100% - 0.6 * 14px) / 1.6); }
+}
