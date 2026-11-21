@@ -61,6 +61,24 @@ def site_path(p):
     return '/posts' + p
 
 
+# Long texts set as books (see "Book reader" in style.css, assets/book.js).
+# A series book: its Bear index page becomes the cover + contents, and each
+# chapter page gets a running head, page-turn links and the reading bar.
+BOOKS = [
+    {'id': 'renjian', 'index': '/classic/renjian/', 'title': '人間詞話', 'author': '王國維',
+     'chapters': ['/poems/01/', '/poems/02/', '/poems/03/', '/poems/04/']},
+    {'id': 'luyou', 'index': '/classic/luyou/', 'title': '放翁詞編年箋注選', 'author': '陸游',
+     'chapters': ['/classic/luyou/01/', '/classic/luyou/02/', '/classic/luyou/03/']},
+    {'id': 'eatstory', 'index': '/eatstory/', 'title': '食林廣記', 'author': None,
+     'chapters': ['/eatstory/01/', '/eatstory/02/', '/eatstory/03/', '/eatstory/04/'],
+     'labels': ['自序', '卷一', '卷二', '卷三']},
+]
+# One-page books: a title page and the reading bar.
+SINGLE_BOOKS = {
+    '/4325/': {'id': 'baorenan', 'title': '報任安書', 'author': '司馬遷', 'kicker': '箋注'},
+}
+ZH_NUM = '一二三四五六七八九十'
+
 # Hand edits made to generated pages, re-applied on every build so a
 # re-import never undoes them: (site path, regex, replacement).
 EDITS = [
@@ -464,7 +482,7 @@ def enchiridion_book(m):
                     f'<h2 class="chapter-no"><span class="visually-hidden">Chapter </span>{roman(i)}</h2>\n{ps}\n</section>')
     colo = re.search(r'Copyright statement:(.*?)</pre>', m, re.S)
     colophon = tidy(colo.group(1)) if colo else ''
-    return f'''<article class="book" lang="en" data-chapters="{n}">
+    return f'''<article class="book" lang="en" data-chapters="{n}" data-book="enchiridion" data-book-title="The Enchiridion">
 <header class="book-title">
 <p class="book-kicker">開源閱讀</p>
 <h1 class="book-name">The Enchiridion</h1>
@@ -490,6 +508,73 @@ def enchiridion_book(m):
 {colophon}</p>
 </footer>
 </article>'''
+
+
+def book_chapters(book):
+    """[(bear path, label, incipit)] for a series book, read from the cache."""
+    key = re.sub(r'[\s·・]', '', book['title'])
+    labels = book.get('labels') or [f'卷{ZH_NUM[i]}' for i in range(len(book['chapters']))]
+    out = []
+    for path, label in zip(book['chapters'], labels):
+        mm = re.sub(r'<style.*?</style>', '', main_of(read(cache_file(path))), flags=re.S)
+        heads = [re.sub(r'<[^>]+>', '', h).strip() for h in re.findall(r'<h[23][^>]*>(.*?)</h[23]>', mm, re.S)]
+        heads = [h for h in heads if h and key not in re.sub(r'[\s·・]', '', h)]
+        inc = re.sub(r'^【(.*)】$', r'\1', re.sub(r'\s+', ' ', heads[0])) if heads else ''
+        if not inc or inc == label:          # e.g. 自序 headed 【自序】: use its opening words
+            body = re.sub(r'<(script|form|h[1-3])\b.*?</\1>|<time\b.*?</time>', '', mm, flags=re.S)
+            text = re.sub(r'\s+', '', re.sub(r'<[^>]+>', '', body))
+            inc = text[:16] + '…'
+        out.append((path, label, html.escape(inc, quote=False)))
+    return out
+
+
+def book_cover(book, chapters, note):
+    lis = '\n'.join(f'<li><a href="{site_path(p)}"><span class="toc-no">{label}</span>'
+                    f'<span class="toc-incipit">{inc}</span></a></li>' for p, label, inc in chapters)
+    author = f'<p class="book-author">{book["author"]}</p>\n' if book.get('author') else ''
+    note = f'<p class="book-note">{note}</p>\n' if note else ''
+    return f'''<article class="book book-zh book-cover" data-book="{book['id']}" data-book-title="{book['title']}">
+<header class="book-title">
+<p class="book-kicker">專欄</p>
+<h1 class="book-name">{book['title']}</h1>
+{author}{note}</header>
+<nav class="book-toc" id="contents" aria-label="目錄">
+<h2 class="book-toc-title">目錄</h2>
+<p class="book-resume" hidden></p>
+<ol class="toc-list toc-zh">
+{lis}
+</ol>
+</nav>
+</article>'''
+
+
+def book_chapter_page(book, chapters, i, body):
+    """Wrap one chapter: running head on top, page-turn links at the bottom."""
+    body = re.sub(r'<div class="navigation-container">.*?</div>', '', body, flags=re.S)
+    path, label, _ = chapters[i]
+    index = site_path(book['index'])
+    prev = (f'<a class="pager-prev" href="{site_path(chapters[i - 1][0])}">‹ {chapters[i - 1][1]}</a>'
+            if i > 0 else '<span class="pager-prev"></span>')
+    nxt = (f'<a class="pager-next" href="{site_path(chapters[i + 1][0])}">{chapters[i + 1][1]} ›</a>'
+           if i + 1 < len(chapters) else '<span class="pager-next"></span>')
+    return (f'<article class="book-page book-zh" data-book="{book["id"]}" data-book-title="{book["title"]}" '
+            f'data-label="{label}　{i + 1} / {len(chapters)}" data-toc="{index}">\n'
+            f'<p class="book-running"><a href="{index}">{book["title"]}</a><span>{label}</span></p>\n'
+            f'{body}\n'
+            f'<nav class="book-pager" aria-label="翻頁">{prev}<a class="pager-toc" href="{index}">目錄</a>{nxt}</nav>\n'
+            '</article>')
+
+
+def book_single_page(meta, body):
+    """One-page book: the post header becomes a title page."""
+    dt = re.search(r'<time datetime="([^"]+)">([^<]*)</time>', body)
+    date = f'<p class="book-date"><time datetime="{dt.group(1)}">{dt.group(2)}</time></p>\n' if dt else ''
+    body = re.sub(r'<header class="post-header">.*?</header>\s*', '', body, count=1, flags=re.S)
+    return (f'<article class="book-page book-zh" data-book="{meta["id"]}" data-book-title="{meta["title"]}" '
+            f'data-label="{meta.get("kicker", "")}" data-toc="#top">\n'
+            f'<header class="book-title" id="top">\n<p class="book-kicker">{meta.get("kicker", "")}</p>\n'
+            f'<h1 class="book-name">{meta["title"]}</h1>\n<p class="book-author">{meta["author"]}</p>\n{date}</header>\n'
+            f'{body}\n</article>')
 
 
 def twix_datelines(m):
@@ -525,6 +610,20 @@ def build(status, images):
             if book:
                 out(p, 'The Enchiridion', book, '<script src="/assets/book.js" defer></script>\n')
                 continue
+        book_script = '<script src="/assets/book.js" defer></script>\n'
+        series = next((b for b in BOOKS if b['index'] == p), None)
+        if series:
+            note = re.search(r'<p>([^<]*連載[^<]*)</p>', m)
+            out(p, series['title'], book_cover(series, book_chapters(series), note.group(1) if note else ''),
+                book_script)
+            continue
+        series = next((b for b in BOOKS if p in b['chapters']), None)
+        if series:
+            body = book_chapter_page(series, book_chapters(series), series['chapters'].index(p), body)
+            vscript += book_script
+        if p in SINGLE_BOOKS:
+            body = book_single_page(SINGLE_BOOKS[p], body)
+            vscript += book_script
         if p == '/archive/twix/2025/':          # same note style as /twix/
             body = twix_datelines(body)
         out(p, re.sub('<[^>]+>', '', title), body, vscript)
