@@ -2,7 +2,7 @@
    Sapere Aude — shared stylesheet
    ===================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Noto+Serif+TC:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Noto+Serif+TC:wght@400;600&family=LXGW+WenKai+TC:wght@400;700&display=swap");
 
 /* ---------- Latin text: Times New Roman ----------
    "Latin Times" covers only Latin letters, digits and basic symbols, so every
@@ -49,7 +49,10 @@
 
     --font-latin: "Latin Times";        /* Latin-only face; CJK falls through */
     --font-body: var(--font-latin), "Songti TC", "Songti SC", "Noto Serif TC", "Source Han Serif TC", serif;
-    --font-kai: var(--font-latin), "Kaiti TC", "Kaiti SC", "STKaiti", "TW-Kai", "BiauKai", "KaiTi", "Noto Serif TC", serif;
+    /* 楷體: macOS Kaiti TC → Windows 標楷體 (DFKai-SB) → LXGW WenKai TC web font.
+       Simplified-only KaiTi comes last: it lacks many traditional glyphs, so
+       on Windows it used to mix fonts within a line. */
+    --font-kai: var(--font-latin), "Kaiti TC", "STKaiti", "TW-Kai", "BiauKai", "DFKai-SB", "LXGW WenKai TC", "Kaiti SC", "KaiTi", "Noto Serif TC", serif;
     --font-title: "Latin Times", "Times New Roman", Times, serif;
     --font-num: "Latin Times", "Times New Roman", Times, serif;   /* digits are tabular */
     /* "Sapere Aude" only: a blackletter nameplate, as on traditional newspapers */
@@ -300,7 +303,7 @@ time {
     display: block;
     padding: 8px 4px;
     text-align: center;
-    font-family: var(--font-kai);
+    font-family: var(--font-body);   /* same face as the main text on every OS */
     font-size: 1em;
     line-height: 1.6;
     letter-spacing: 0.2em;
