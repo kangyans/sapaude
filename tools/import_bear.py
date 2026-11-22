@@ -86,8 +86,6 @@ EDITS = [
     ('/arxiv/',
      r'的內容。他做的非常好.*?</p>\s*<p><em><strong>P\.S\.</strong></em>.*?</p>',
      '的內容。</p>'),
-    # 2026-11-21: 閒話 entry dated 2006 in Bear; it sits between 2026/10/14 and 2026/09/25
-    ('/twix/', r'datetime="2006-10-08">2006/10/08', 'datetime="2026-10-08">2026/10/08'),
 ]
 
 
@@ -604,6 +602,47 @@ def twix_tidy(m):
     return m
 
 
+ZH_MONTHS = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+
+
+def twix_index(m):
+    """閒話: give every entry a permalink id (post-YYYY-MM-DD, -2… for a second
+    entry on the same day), link its date to it, and put a month marker
+    before the first entry of each month. Runs after twix_datelines."""
+    out, last, seen, month = [], 0, set(), None
+    comments = [c.span() for c in re.finditer(r'<!--.*?--!?>', m, re.S)]   # Bear page has a "--!>" one
+    starts = [x for x in re.finditer(r'<div class="container"([^>]*)>', m)]
+    for i, x in enumerate(starts):
+        end = starts[i + 1].start() if i + 1 < len(starts) else len(m)
+        chunk = m[x.start():end]
+        dt = re.search(r'<time datetime="(\d{4})-(\d{2})-(\d{2})">([^<]*)</time>', chunk)
+        if not dt or any(a <= x.start() < b for a, b in comments):
+            continue                            # no date, or inside the commented-out template
+        own = re.search(r'\sid="([^"]+)"', x.group(1))
+        pid = own.group(1) if own else f'post-{dt.group(1)}-{dt.group(2)}-{dt.group(3)}'
+        n = 2
+        while pid in seen:
+            pid = re.sub(r'-\d+$', '', pid) if n > 2 else pid
+            pid, n = f'{pid}-{n}', n + 1
+        seen.add(pid)
+        chunk = chunk.replace(dt.group(0), f'<a class="twix-link" href="#{pid}" title="本條鏈接">{dt.group(0)}</a>', 1)
+        if not own:
+            chunk = chunk.replace('<div class="container"', f'<div class="container" id="{pid}"', 1)
+        out.append(m[last:x.start()])
+        ym = (dt.group(1), dt.group(2))
+        if ym != month:
+            month = ym
+            mid = f'{ym[0]}-{ym[1]}'
+            mattr = '' if mid in seen else f' id="{mid}"'
+            out.append(f'<h3 class="twix-month"{mattr}>{ZH_MONTHS[int(ym[1]) - 1]}'
+                       f'<span class="twix-month-year">{ym[0]}</span></h3>\n')
+            seen.add(mid)
+        out.append(chunk)
+        last = end
+    out.append(m[last:])
+    return ''.join(out)
+
+
 def build(status, images):
     ok = [p for p, c in status.items() if c == 200 and p not in EXCLUDE]
     local = set(ok) | {'/'} | set(SECTIONS)
@@ -644,7 +683,7 @@ def build(status, images):
             body = book_single_page(SINGLE_BOOKS[p], body)
             vscript += book_script
         if p == '/archive/twix/2025/':          # same note style as /twix/
-            body = twix_tidy(twix_datelines(body))
+            body = twix_index(twix_tidy(twix_datelines(body)))
         out(p, re.sub('<[^>]+>', '', title), body, vscript)
 
     groups = OrderedDict()
@@ -665,7 +704,9 @@ def build(status, images):
         if p == '/arxiv/':
             m = directory(m)
         if p == '/twix/':
-            m = twix_tidy(twix_datelines(m))
+            # an entry typed as 2006 in Bear; it sits between 2026/10/14 and 2026/09/25
+            m = re.sub(r'(公佈於\s*10/08/)2006', r'\g<1>2026', m)
+            m = twix_index(twix_tidy(twix_datelines(m)))
             # drop the 說明 line about underlining names/places (no longer underlined)
             m = re.sub(r'<p[^>]*>\s*說明：人名、地名加.*?</p>\s*', '', m, count=1, flags=re.S)
         script = '<script src="/assets/rows.js" defer></script>\n' if p in ('/movies/', '/games/') else ''

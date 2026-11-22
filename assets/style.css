@@ -951,6 +951,44 @@ p.tags {
     color: var(--twix-ink);
 }
 
+/* the date is the entry's permalink (#post-YYYY-MM-DD) */
+.twix-link, .twix-link:hover { text-decoration: none; }
+.twix-link time { color: inherit; }
+.twix-link:hover { color: var(--accent); }
+.twix .container, .post-body > .container:has(> .notes) { scroll-margin-top: 24px; }
+.twix .container:target > .notes,
+.post-body > .container:has(> .notes):target > .notes { outline: 1px solid var(--accent); outline-offset: 3px; }
+
+/* month markers between entries: same look as the 博文 year rules */
+.twix-month,
+.post-body .twix-month {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 40px 0 16px;
+    font-family: var(--font-kai);
+    font-size: 1em;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    scroll-margin-top: 24px;
+}
+.twix > .twix-month:first-of-type,
+.post-body > .twix-month:first-of-type { margin-top: 8px; }
+.twix-month-year {
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums lining-nums;
+    font-size: 0.85em;
+    letter-spacing: 0.08em;
+}
+.twix-month::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    align-self: center;
+    background: var(--rule-strong);
+}
+
 /* phones: the note sits pinned over the card's bottom-right corner */
 @media (max-width: 640px) {
     .twix .container, .post-body > .container:has(> .notes) { flex-direction: column; align-items: stretch; }
