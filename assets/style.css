@@ -884,7 +884,7 @@ p.tags {
 /* ---------- 閒話 /twix/ ---------- */
 /* The original 閒話 look (as kept on the twix_2025 archive): each entry is a
    paper card, with a yellow sticky note for the date stuck onto its right
-   edge — fixed width, slightly tilted, held by a strip of tape, so the main
+   edge — fixed width, held by a strip of tape, so the main
    text stays the main thing. Colours are tokens so dark mode stays readable;
    the same rules also cover the twix_2025 archive page. */
 .twix .container,
@@ -938,10 +938,7 @@ p.tags {
     line-height: 1.65;
     text-align: justify;
     box-shadow: var(--twix-note-shadow);
-    transform: rotate(1.6deg);
 }
-.twix .container:nth-of-type(even) > .notes,
-.post-body > .container:has(> .notes):nth-of-type(even) > .notes { transform: rotate(-1.2deg); }
 /* strip of tape holding the note */
 .twix .notes::before,
 .post-body > .container:has(> .notes) > .notes::before {
@@ -954,7 +951,6 @@ p.tags {
     margin-left: -28px;
     background: var(--twix-tape);
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.12);
-    transform: rotate(-3deg);
 }
 .twix .notes p, .post-body > .container:has(> .notes) > .notes p { margin: 0; }
 .twix .notes p + p, .post-body > .container:has(> .notes) > .notes p + p { margin-top: 6px; }
