@@ -543,9 +543,9 @@ ul.blog-posts li a { text-decoration: none; }
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;     /* name in the top-left corner */
     position: relative;
-    padding: 16px 36px 16px 18px;   /* right room for the corner numeral */
+    padding: 10px 36px 12px 14px;   /* right room for the corner numeral */
     text-decoration: none;
     color: var(--heading);
 }
@@ -572,6 +572,23 @@ ul.blog-posts li a { text-decoration: none; }
     transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }
 
+/* the series' line, centred in the rest of the cell */
+.series-blurb {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 6px -22px 0 0;           /* centre across the cell, not just left of the numeral */
+    text-align: center;
+    font-family: var(--font-kai);
+    font-size: 0.8em;
+    line-height: 1.6;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    transition: color 0.2s ease;
+}
+.series-grid a:hover .series-blurb { color: var(--text); }
+
 .series-grid a:hover .series-name {
     color: var(--accent);
     text-decoration-color: var(--accent);
@@ -583,7 +600,8 @@ ul.blog-posts li a { text-decoration: none; }
     .calendar-content { justify-content: center; gap: 28px; }
     .calendar-left { flex: 0 0 auto; }
     .calendar-bottom { border-bottom: 1px solid var(--heading); }
-    .series-grid a { padding: 12px 14px; }
+    .series-grid a { padding: 10px 14px 12px; }
+    .series-blurb { margin-right: 0; }
 }
 
 /* ---------- Card grids (games / movies) ---------- */
@@ -1069,7 +1087,8 @@ p.tags {
 
     /* 專欄 */
     .series-heading { padding: 5px 12px; font-size: 0.7em; min-height: 0; }
-    .series-grid a { padding: 9px 30px 9px 12px; }
+    .series-grid a { padding: 8px 30px 10px 12px; }
+    .series-blurb { font-size: 0.78em; margin-right: -18px; }
     .series-no { top: 5px; right: 8px; }
     .series-no { font-size: 0.66em; }
     .series-name { font-size: 0.95em; }  /* = ul.blog-posts li on phones */

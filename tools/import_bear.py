@@ -79,6 +79,14 @@ SINGLE_BOOKS = {
 }
 ZH_NUM = '一二三四五六七八九十'
 
+# 專欄 tiles on the home page: a line under each series name
+SERIES_BLURBS = {
+    '食林廣記': '飲食男女的食物故事',
+    '放翁詞編年箋注': '從今去，任東西南北，作個飛仙',
+    '人間詞話': '春花秋月，悲歡離合，天下人無論古今，都繫此。',
+    '旅美札记': '遠方啊遠方，遠方',
+}
+
 # Hand edits made to generated pages, re-applied on every build so a
 # re-import never undoes them: (site path, regex, replacement).
 EDITS = [
@@ -743,8 +751,10 @@ def build(status, images):
         for i, (href, name) in enumerate(re.findall(r'<a href=[\'"]([^\'"]+)[\'"]>(.*?)</a>', sm.group(1), re.S)):
             name = re.sub(r'^\s*(?:<|&lt;|《|〈)|(?:>|&gt;|》|〉)\s*$', '', name.strip())
             no = '壹貳參肆伍陸柒捌玖拾'[i] if i < 10 else str(i + 1)
+            blurb = SERIES_BLURBS.get(name)
+            blurb = f'<span class="series-blurb">{blurb}</span>' if blurb else ''
             tiles.append(f'<li><a href="{href}"><span class="series-no">{no}</span>'
-                         f'<span class="series-name">{name}</span></a></li>')
+                         f'<span class="series-name">{name}</span>{blurb}</a></li>')
         series = ('<nav class="series" aria-label="專欄">\n<h2 class="series-heading">專欄</h2>\n'
                   '<ul class="series-grid">\n' + '\n'.join(tiles) + '\n</ul>\n</nav>')
     hgroups = OrderedDict()
