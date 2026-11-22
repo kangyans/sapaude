@@ -73,7 +73,9 @@
     --twix-paper: #eaeee9;      /* 閒話 entry card */
     --twix-sticky: #f8f0c6;     /* 閒話 date sticky note: soft butter yellow */
     --twix-ink: #1f1d19;
-    --twix-shadow: rgba(0, 0, 0, 0.35);
+    --twix-tape: rgba(255, 255, 255, 0.55);
+    --twix-card-shadow: 0 1px 2px rgba(60, 50, 30, 0.10), 0 6px 16px rgba(60, 50, 30, 0.10);
+    --twix-note-shadow: 0 1px 1px rgba(60, 50, 30, 0.12), 2px 8px 12px -4px rgba(60, 50, 30, 0.28);
     --shadow: 0 1px 2px rgba(60, 50, 30, 0.05), 0 6px 20px rgba(60, 50, 30, 0.07);
     --shadow-lift: 0 2px 4px rgba(60, 50, 30, 0.08), 0 14px 30px rgba(60, 50, 30, 0.14);
 
@@ -97,7 +99,9 @@
         --twix-paper: #2b302c;
         --twix-sticky: #3e3b2a;
         --twix-ink: #e6e1d6;
-        --twix-shadow: rgba(0, 0, 0, 0.55);
+        --twix-tape: rgba(255, 255, 255, 0.10);
+        --twix-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 16px rgba(0, 0, 0, 0.30);
+        --twix-note-shadow: 0 1px 1px rgba(0, 0, 0, 0.40), 2px 8px 12px -4px rgba(0, 0, 0, 0.55);
         --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
         --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 14px 30px rgba(0, 0, 0, 0.4);
         color-scheme: dark;
@@ -878,24 +882,24 @@ p.tags {
 .navigation-container .nav-next { margin-left: auto; }
 
 /* ---------- 閒話 /twix/ ---------- */
-/* Back to the original 閒話 look (as kept on the twix_2025 archive): each
-   entry is a paper card with a drop shadow and a yellow sticky note beside
-   it for the date. Colours are tokens so dark mode stays readable; the same
-   rules also cover the twix_2025 archive page, whose own inline styles set
-   light backgrounds without a text colour. */
+/* The original 閒話 look (as kept on the twix_2025 archive): each entry is a
+   paper card, with a yellow sticky note for the date stuck onto its right
+   edge — fixed width, slightly tilted, held by a strip of tape, so the main
+   text stays the main thing. Colours are tokens so dark mode stays readable;
+   the same rules also cover the twix_2025 archive page. */
 .twix .container,
 .post-body > .container:has(> .notes) {
     display: flex;
     align-items: flex-start;
-    gap: 16px;
-    margin: 0 0 26px;
+    gap: 0;                          /* archive pages' inline styles set a gap */
+    margin: 0 0 30px;
     border: 0;
 }
 .twix > br, .container:has(> .notes) + br { display: none; }   /* Bear spacer <br>s between entries */
 
 .twix .content,
 .post-body > .container:has(> .notes) > .content {
-    flex: 3;
+    flex: 1;
     min-width: 0;
     background: var(--twix-paper);
     color: var(--twix-ink);
@@ -903,28 +907,57 @@ p.tags {
     font-size: 0.95em;
     line-height: 1.85;
     text-align: justify;
-    box-shadow: 5px 5px 10px var(--twix-shadow);
+    border-radius: 2px;
+    box-shadow: var(--twix-card-shadow);
 }
+.twix .content > :first-child,
+.post-body > .container:has(> .notes) > .content > :first-child { margin-top: 0; }
 .twix .content > :last-child,
 .post-body > .container:has(> .notes) > .content > :last-child { margin-bottom: 0; }
-.twix .content img { display: block; margin: 12px 0; }
+.twix .content img { display: block; margin: 12px auto; }
 .twix .content a, .post-body > .container:has(> .notes) a { color: var(--twix-ink); }
 .twix .content a:hover, .post-body > .container:has(> .notes) a:hover { color: var(--accent); }
 
+/* a row of pictures: shares the card width instead of fixed 200px images */
+.twix-gallery { display: flex; gap: 10px; margin: 14px 0 0; }
+.twix-gallery p { flex: 1; min-width: 0; margin: 0; }
+.twix .twix-gallery img { width: 100%; aspect-ratio: 20 / 21; object-fit: cover; margin: 0; }
+
 .twix .notes,
 .post-body > .container:has(> .notes) > .notes {
-    flex: 1;
+    position: relative;
+    z-index: 1;
+    flex: 0 0 168px;
+    width: 168px;
     min-width: 0;
+    margin: 22px 0 0 -14px;          /* stuck onto the card's right edge */
     background: var(--twix-sticky);
     color: var(--twix-ink);
-    padding: 10px 12px;
+    padding: 14px 13px 12px;
     font-size: 0.78em;
     line-height: 1.65;
     text-align: justify;
-    box-shadow: 5px 5px 5px var(--twix-shadow);
+    box-shadow: var(--twix-note-shadow);
+    transform: rotate(1.6deg);
+}
+.twix .container:nth-of-type(even) > .notes,
+.post-body > .container:has(> .notes):nth-of-type(even) > .notes { transform: rotate(-1.2deg); }
+/* strip of tape holding the note */
+.twix .notes::before,
+.post-body > .container:has(> .notes) > .notes::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    width: 56px;
+    height: 16px;
+    margin-left: -28px;
+    background: var(--twix-tape);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.12);
+    transform: rotate(-3deg);
 }
 .twix .notes p, .post-body > .container:has(> .notes) > .notes p { margin: 0; }
-.twix .notes p + p { margin-top: 6px; }
+.twix .notes p + p, .post-body > .container:has(> .notes) > .notes p + p { margin-top: 6px; }
 
 /* "公佈於 YYYY/MM/DD" on the sticky note */
 .twix-date { margin: 0 0 4px; font-family: var(--font-kai); letter-spacing: 0.06em; }
@@ -937,9 +970,18 @@ p.tags {
     color: var(--twix-ink);
 }
 
+/* phones: the note sits pinned over the card's bottom-right corner */
 @media (max-width: 640px) {
-    .twix .container, .post-body > .container:has(> .notes) { flex-direction: column; align-items: stretch; gap: 10px; }
-    .twix .notes, .post-body > .container:has(> .notes) > .notes { align-self: flex-end; max-width: 75%; }
+    .twix .container, .post-body > .container:has(> .notes) { flex-direction: column; align-items: stretch; }
+    .twix .content, .post-body > .container:has(> .notes) > .content { padding-bottom: 26px; }
+    .twix .notes, .post-body > .container:has(> .notes) > .notes {
+        flex: none;
+        align-self: flex-end;
+        width: auto;
+        min-width: 150px;
+        max-width: 78%;
+        margin: -14px 10px 0 0;
+    }
 }
 
 /* ---------- Cards from Bear markup ---------- */
@@ -1002,7 +1044,7 @@ p.tags {
     ul.blog-posts li time { font-size: 0.92em; flex-basis: 3.1em; }
 
     /* 閒話, tags, prev/next, footer */
-    .twix .content { font-size: 0.92em; padding: 16px 16px; }
+    .twix .content { font-size: 0.92em; padding: 16px 16px 26px; }
     .twix .notes { font-size: 0.76em; }
     .tag { font-size: 0.75em; }
     .navigation-container a { font-size: 0.78em; }

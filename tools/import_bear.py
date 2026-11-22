@@ -86,6 +86,8 @@ EDITS = [
     ('/arxiv/',
      r'的內容。他做的非常好.*?</p>\s*<p><em><strong>P\.S\.</strong></em>.*?</p>',
      '的內容。</p>'),
+    # 2026-11-21: 閒話 entry dated 2006 in Bear; it sits between 2026/10/14 and 2026/09/25
+    ('/twix/', r'datetime="2006-10-08">2006/10/08', 'datetime="2026-10-08">2026/10/08'),
 ]
 
 
@@ -581,8 +583,25 @@ def twix_datelines(m):
     """閒話: normalise each note's '公佈於 MM/DD/YYYY' to '公佈於 YYYY/MM/DD'."""
     def rep(x):
         mo, d, y = x.group(1), x.group(2), x.group(3)
+        if int(mo) > 12:                       # typed as DD/MM/YYYY
+            mo, d = d, mo
         return (f'<p class="twix-date">公佈於 <time datetime="{y}-{mo}-{d}">{y}/{mo}/{d}</time>')
     return re.sub(r'<p>\s*公佈於\s*(\d{2})/(\d{2})/(\d{4})\s*(?:</p>)?', lambda x: rep(x) + '</p>', m)
+
+
+def twix_tidy(m):
+    """閒話: repair Bear markup so each card lays out cleanly — nested or stray
+    <p>s, </img>, and the inline-styled flex row of fixed 200px images (which
+    overflowed on phones) becomes a .twix-gallery that shrinks to fit."""
+    m = re.sub(r'<p>\s*(?=<p[\s>])', '', m)            # <p><p>…  -> <p>…
+    m = re.sub(r'(</p>\s*)</p>', r'\1', m)                # …</p></p> -> …</p>
+    m = re.sub(r'(</marquee>)\s*</p>', r'\1', m)
+    m = m.replace('</img>', '')
+    def gallery(g):
+        imgs = re.sub(r'\s(?:width|height|style)="[^"]*"', '', g.group(1))
+        return '<div class="twix-gallery">' + imgs + '</div>'
+    m = re.sub(r'<div style="display: ?flex;[^"]*">(\s*(?:<p>\s*<img[^>]*>\s*</p>\s*)+)</div>', gallery, m)
+    return m
 
 
 def build(status, images):
@@ -625,7 +644,7 @@ def build(status, images):
             body = book_single_page(SINGLE_BOOKS[p], body)
             vscript += book_script
         if p == '/archive/twix/2025/':          # same note style as /twix/
-            body = twix_datelines(body)
+            body = twix_tidy(twix_datelines(body))
         out(p, re.sub('<[^>]+>', '', title), body, vscript)
 
     groups = OrderedDict()
@@ -646,7 +665,7 @@ def build(status, images):
         if p == '/arxiv/':
             m = directory(m)
         if p == '/twix/':
-            m = twix_datelines(m)
+            m = twix_tidy(twix_datelines(m))
             # drop the 說明 line about underlining names/places (no longer underlined)
             m = re.sub(r'<p[^>]*>\s*說明：人名、地名加.*?</p>\s*', '', m, count=1, flags=re.S)
         script = '<script src="/assets/rows.js" defer></script>\n' if p in ('/movies/', '/games/') else ''
