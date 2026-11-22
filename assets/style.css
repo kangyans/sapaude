@@ -881,15 +881,14 @@ p.tags {
 
 /* ---------- 閒話 /twix/ ---------- */
 /* The original 閒話 look (as kept on the twix_2025 archive): each entry is a
-   paper card, with a yellow sticky note for the date stuck onto its right
-   edge — fixed width, so the main
-   text stays the main thing. Colours are tokens so dark mode stays readable;
+   paper card, with a yellow sticky note for the date beside it. The note
+   column has one fixed width, so every card is the same width. Colours are tokens so dark mode stays readable;
    the same rules also cover the twix_2025 archive page. */
 .twix .container,
 .post-body > .container:has(> .notes) {
     display: flex;
     align-items: flex-start;
-    gap: 0;                          /* archive pages' inline styles set a gap */
+    gap: 16px;
     margin: 0 0 30px;
     border: 0;
 }
@@ -923,12 +922,10 @@ p.tags {
 
 .twix .notes,
 .post-body > .container:has(> .notes) > .notes {
-    position: relative;
-    z-index: 1;
     flex: 0 0 168px;
     width: 168px;
     min-width: 0;
-    margin: 22px 0 0 -14px;          /* stuck onto the card's right edge */
+    margin: 0;
     background: var(--twix-sticky);
     color: var(--twix-ink);
     padding: 14px 13px 12px;
@@ -959,14 +956,9 @@ p.tags {
 .twix .container:target > .notes,
 .post-body > .container:has(> .notes):target > .notes { outline: 1px solid var(--accent); outline-offset: 3px; }
 
-/* a note holding only the date: a smaller slip, as wide as the date */
+/* a note holding only the date: a shorter slip, same width */
 .twix .notes.twix-date-only,
-.post-body > .container:has(> .notes) > .notes.twix-date-only {
-    flex: 0 0 auto;
-    width: auto;
-    padding: 8px 12px;
-    white-space: nowrap;
-}
+.post-body > .container:has(> .notes) > .notes.twix-date-only { padding: 8px 12px; }
 .twix-date-only .twix-date { margin: 0; }
 
 /* footnote markers [n]: text and note link to each other, in cinnabar */
@@ -1015,19 +1007,16 @@ p.tags {
     background: var(--rule-strong);
 }
 
-/* phones: the note sits pinned over the card's bottom-right corner */
+/* phones: the note goes under the card, on the right */
 @media (max-width: 640px) {
-    .twix .container, .post-body > .container:has(> .notes) { flex-direction: column; align-items: stretch; }
-    .twix .content, .post-body > .container:has(> .notes) > .content { padding-bottom: 26px; }
+    .twix .container, .post-body > .container:has(> .notes) { flex-direction: column; align-items: stretch; gap: 10px; }
     .twix .notes, .post-body > .container:has(> .notes) > .notes {
         flex: none;
         align-self: flex-end;
         width: auto;
         min-width: 150px;
-        max-width: 78%;
-        margin: -14px 10px 0 0;
+        max-width: 75%;
     }
-    .twix .notes.twix-date-only, .post-body > .container:has(> .notes) > .notes.twix-date-only { min-width: 0; }
 }
 
 /* ---------- Cards from Bear markup ---------- */
@@ -1090,7 +1079,7 @@ p.tags {
     ul.blog-posts li time { font-size: 0.92em; flex-basis: 3.1em; }
 
     /* 閒話, tags, prev/next, footer */
-    .twix .content { font-size: 0.92em; padding: 16px 16px 26px; }
+    .twix .content { font-size: 0.92em; padding: 16px 16px; }
     .twix .notes { font-size: 0.76em; }
     .tag { font-size: 0.75em; }
     .navigation-container a { font-size: 0.78em; }
