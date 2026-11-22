@@ -929,7 +929,9 @@ p.tags {
     background: var(--twix-sticky);
     color: var(--twix-ink);
     padding: 14px 13px 12px;
+    font-family: var(--font-kai);    /* the whole note in the 公佈於 face, so it reads one size */
     font-size: 0.78em;
+    letter-spacing: 0.06em;
     line-height: 1.65;
     text-align: justify;
     box-shadow: var(--twix-note-shadow);
@@ -938,7 +940,7 @@ p.tags {
 .twix .notes p + p, .post-body > .container:has(> .notes) > .notes p + p { margin-top: 6px; }
 
 /* "公佈於 YYYY/MM/DD" on the sticky note */
-.twix-date { margin: 0 0 4px; font-family: var(--font-kai); letter-spacing: 0.06em; }
+.twix-date { margin: 0 0 4px; }
 .twix-date time {
     font-family: var(--font-num);
     font-variant-numeric: tabular-nums lining-nums;
