@@ -959,6 +959,32 @@ p.tags {
 .twix .container:target > .notes,
 .post-body > .container:has(> .notes):target > .notes { outline: 1px solid var(--accent); outline-offset: 3px; }
 
+/* a note holding only the date: a smaller slip, as wide as the date */
+.twix .notes.twix-date-only,
+.post-body > .container:has(> .notes) > .notes.twix-date-only {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 8px 12px;
+    white-space: nowrap;
+}
+.twix-date-only .twix-date { margin: 0; }
+
+/* footnote markers [n]: text and note link to each other, in cinnabar */
+.twix .twix-ref,
+.post-body > .container:has(> .notes) .twix-ref {
+    color: var(--accent);
+    text-decoration: none;
+    font-family: var(--font-num);
+    font-size: 0.85em;
+    padding: 0 1px;
+}
+.twix .twix-ref:hover,
+.post-body > .container:has(> .notes) .twix-ref:hover { text-decoration: underline; }
+.twix .notes p:target,
+.post-body > .container:has(> .notes) > .notes p:target,
+.twix .twix-ref:target,
+.post-body > .container:has(> .notes) .twix-ref:target { background: var(--accent-soft); }
+
 /* month markers between entries: same look as the 博文 year rules */
 .twix-month,
 .post-body .twix-month {
@@ -1001,6 +1027,7 @@ p.tags {
         max-width: 78%;
         margin: -14px 10px 0 0;
     }
+    .twix .notes.twix-date-only, .post-body > .container:has(> .notes) > .notes.twix-date-only { min-width: 0; }
 }
 
 /* ---------- Cards from Bear markup ---------- */

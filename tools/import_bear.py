@@ -605,6 +605,27 @@ def twix_tidy(m):
 ZH_MONTHS = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
 
 
+def twix_notes(chunk, pid):
+    """One 閒話 entry: footnote markers [n] in the text and the '[n] …' lines on
+    the note link to each other; a note holding only the date is marked
+    date-only so it can be a smaller slip."""
+    cut = chunk.find('<div class="notes">')
+    if cut < 0:
+        return chunk
+    text, note = chunk[:cut], chunk[cut:]
+    for n in dict.fromkeys(re.findall(r'<p>\s*\[(\d+)\]', note)):
+        mark = re.compile(r'\[' + n + r'\](?![^<]*>)')       # [n] in text, not inside a tag
+        if not mark.search(text):
+            continue
+        text = mark.sub(f'<a class="twix-ref" id="{pid}-ref{n}" href="#{pid}-fn{n}">[{n}]</a>', text, count=1)
+        note = re.sub(r'<p>\s*\[' + n + r'\]\s*',
+                      f'<p id="{pid}-fn{n}"><a class="twix-ref" href="#{pid}-ref{n}">[{n}]</a> ', note, count=1)
+    rest = re.sub(r'<p class="twix-date">.*?</p>', '', note, count=1, flags=re.S)
+    if not re.sub(r'<[^>]+>|\s', '', rest):
+        note = note.replace('<div class="notes">', '<div class="notes twix-date-only">', 1)
+    return text + note
+
+
 def twix_index(m):
     """閒話: give every entry a permalink id (post-YYYY-MM-DD, -2… for a second
     entry on the same day), link its date to it, and put a month marker
@@ -628,6 +649,7 @@ def twix_index(m):
         chunk = chunk.replace(dt.group(0), f'<a class="twix-link" href="#{pid}" title="本條鏈接">{dt.group(0)}</a>', 1)
         if not own:
             chunk = chunk.replace('<div class="container"', f'<div class="container" id="{pid}"', 1)
+        chunk = twix_notes(chunk, pid)
         out.append(m[last:x.start()])
         ym = (dt.group(1), dt.group(2))
         if ym != month:
